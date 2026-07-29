@@ -1,0 +1,6 @@
+{
+  "name": "Jeomseon.Unity.UI.Samples.BasicUsage",
+  "references": [
+    "Jeomseon.Unity.UI"
+  ]
+}

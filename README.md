@@ -7,7 +7,7 @@ Reusable uGUI and TextMesh Pro controls, popups, and interaction components.
 OpenUPM 등록 전에는 Package Manager의 **Add package from git URL**에서 다음 주소를 사용합니다.
 
 ```text
-https://github.com/jeomseon0516/Unity.UI.git#v0.2.2
+https://github.com/jeomseon0516/Unity.UI.git#v0.2.3
 ```
 
 ## 리팩토링 방침
