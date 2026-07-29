@@ -8,8 +8,10 @@ using Jeomseon.UI.Components;
 using static Jeomseon.Editor.EditorGUIHelper;
 using static Jeomseon.Editor.EditorReflectionHelper;
 
+namespace Jeomseon.UI.Editor
+{
 [CustomEditor(typeof(RangeAdjustmentSlider))]
-internal sealed class RangeAdjustmentSliderEditor : Editor
+internal sealed class RangeAdjustmentSliderEditor : UnityEditor.Editor
 {
     private sealed class DivideOption
     {
@@ -183,5 +185,6 @@ internal sealed class RangeAdjustmentSliderEditor : Editor
             serializedObject.ApplyModifiedProperties();
         }
     }
+}
 }
 #endif

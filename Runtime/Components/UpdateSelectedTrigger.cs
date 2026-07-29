@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
+namespace Jeomseon.UI.Components
+{
 public class UpdateSelectedTrigger : MonoBehaviour, IUpdateSelectedHandler
 {
     public event UnityAction<BaseEventData> OnUpdateSelectedEvent
@@ -18,4 +20,5 @@ public class UpdateSelectedTrigger : MonoBehaviour, IUpdateSelectedHandler
     {
         _onUpdateSelectedEvent.Invoke(eventData);
     }
+}
 }

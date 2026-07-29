@@ -8,8 +8,10 @@ using static Jeomseon.Editor.EditorGUIHelper;
 using static Jeomseon.Editor.EditorReflectionHelper;
 using static Jeomseon.UI.Components.HorizontalEnumeratedItem;
 
+namespace Jeomseon.UI.Editor
+{
 [CustomEditor(typeof(HorizontalEnumeratedItem))]
-internal sealed class HorizontalEnumeratedItemEditor : Editor
+internal sealed class HorizontalEnumeratedItemEditor : UnityEditor.Editor
 {
     private HorizontalEnumeratedItem _horizontalEnumeratedItem;
 
@@ -134,5 +136,6 @@ internal sealed class HorizontalEnumeratedItemEditor : Editor
             serializedObject.ApplyModifiedProperties();
         }
     }
+}
 }
 #endif

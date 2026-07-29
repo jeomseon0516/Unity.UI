@@ -5,8 +5,10 @@ using Jeomseon.UI.Components;
 using static Jeomseon.Editor.EditorGUIHelper;
 using static Jeomseon.Editor.EditorReflectionHelper;
 
+namespace Jeomseon.UI.Editor
+{
 [CustomEditor(typeof(HorizontalSelector))]
-internal sealed class HorizontalSelectorEditor : Editor
+internal sealed class HorizontalSelectorEditor : UnityEditor.Editor
 {
     private HorizontalSelector _horizontalSelector = null;
 
@@ -97,5 +99,6 @@ internal sealed class HorizontalSelectorEditor : Editor
             }
         }
     }
+}
 }
 #endif
