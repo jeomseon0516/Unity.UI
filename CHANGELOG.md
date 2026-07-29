@@ -1,5 +1,10 @@
 # 변경 기록
 
+## [0.2.0] - 2026-07-29
+
+- 런타임 어셈블리의 EditorToolkit 참조를 제거하고 경량 Attributes 패키지를 참조하도록 변경했습니다.
+- UI CustomEditor의 공통 Editor Helper 사용을 위해 Editor 어셈블리 참조는 유지했습니다.
+
 ## [Unreleased]
 
 - TODO(api): 범용 컨트롤은 UI Toolkit의 Slider·ListView·Pointer 이벤트로 대체 가능한지 확인하고 런타임 uGUI가 필요한 부분만 유지합니다.
