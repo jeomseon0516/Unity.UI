@@ -1,5 +1,9 @@
 # 변경 기록
 
+## [0.2.1] - 2026-07-29
+
+- Jeomseon Unity Attributes 0.2.0과 EditorToolkit 0.2.1을 사용하도록 의존성을 갱신했습니다.
+
 ## [0.2.0] - 2026-07-29
 
 - 런타임 어셈블리의 EditorToolkit 참조를 제거하고 경량 Attributes 패키지를 참조하도록 변경했습니다.
