@@ -1,4 +1,4 @@
-namespace Jeomseon.PackageNotes
+namespace Jeomseon.UI
 {
     internal static class PackageArchitectureNotes
     {

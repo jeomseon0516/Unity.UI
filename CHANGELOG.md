@@ -1,5 +1,10 @@
 # 변경 기록
 
+## [0.3.0] - 2026-07-29
+
+- 패키지 폴더 구조와 namespace를 일치시키고 Runtime·Editor·Samples 어셈블리의 `rootNamespace`를 정리했습니다.
+- 전역 namespace에 있던 `ScrollTrigger`와 `UpdateSelectedTrigger`를 `Jeomseon.UI.Components`로 이동했습니다.
+
 ## [0.2.3] - 2026-07-29
 
 - PointerClickTrigger 사용법을 확인하는 `Basic Usage` 샘플을 추가했습니다.

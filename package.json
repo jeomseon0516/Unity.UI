@@ -1,6 +1,6 @@
 {
   "name": "com.jeomseon.unity.ui",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "displayName": "Jeomseon Unity UI",
   "description": "Reusable uGUI and TextMesh Pro controls, popups, and interaction components.",
   "unity": "2022.3",

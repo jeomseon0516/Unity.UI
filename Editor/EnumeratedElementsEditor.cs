@@ -6,8 +6,10 @@ using Jeomseon.UI.Components;
 using static Jeomseon.Editor.EditorGUIHelper;
 using static Jeomseon.Editor.EditorReflectionHelper;
 
+namespace Jeomseon.UI.Editor
+{
 [CustomEditor(typeof(EnumeratedElements))]
-internal sealed class EnumeratedElementsEditor : Editor
+internal sealed class EnumeratedElementsEditor : UnityEditor.Editor
 {
     private ContentSizeFitter _contentSizeFitter;
     private GridLayoutGroup _gridLayoutGroup;
@@ -100,5 +102,6 @@ internal sealed class EnumeratedElementsEditor : Editor
             serializedObject.ApplyModifiedProperties();
         }
     }
+}
 }
 #endif

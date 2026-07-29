@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
+namespace Jeomseon.UI.Components
+{
 public class ScrollTrigger : MonoBehaviour, IScrollHandler
 {
     public event UnityAction<PointerEventData> OnScrollEvent
@@ -18,4 +20,5 @@ public class ScrollTrigger : MonoBehaviour, IScrollHandler
     {
         _onScrollEvent.Invoke(eventData);
     }
+}
 }

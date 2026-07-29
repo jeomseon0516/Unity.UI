@@ -1,5 +1,6 @@
 {
   "name": "Jeomseon.Unity.UI.Samples.BasicUsage",
+  "rootNamespace": "Jeomseon.Samples.UI",
   "references": [
     "Jeomseon.Unity.UI"
   ]
