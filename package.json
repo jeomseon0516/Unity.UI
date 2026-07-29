@@ -1,0 +1,28 @@
+{
+  "name": "com.jeomseon.unity.ui",
+  "version": "0.1.0",
+  "displayName": "Jeomseon Unity UI",
+  "description": "Reusable uGUI and TextMesh Pro controls, popups, and interaction components.",
+  "unity": "2022.3",
+  "dependencies": {
+    "com.jeomseon.unity.core": "0.1.0",
+    "com.jeomseon.unity.singleton": "0.1.0",
+    "com.jeomseon.unity.coroutines": "0.1.0",
+    "com.jeomseon.unity.editor-toolkit": "0.1.0",
+    "com.unity.ugui": "1.0.0"
+  },
+  "author": {
+    "name": "jeomseon0516",
+    "url": "https://github.com/jeomseon0516"
+  },
+  "keywords": [
+    "jeomseon",
+    "unity",
+    "ui"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeomseon0516/Unity.UI.git"
+  }
+}
