@@ -1,10 +1,10 @@
 {
   "name": "com.jeomseon.unity.ui",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "displayName": "Jeomseon Unity UI",
   "description": "Reusable uGUI and TextMesh Pro controls, popups, and interaction components.",
-  "unity": "6000.3",
-  "unityRelease": "15f1",
+  "unity": "6000.5",
+  "unityRelease": "7f1",
   "dependencies": {
     "com.jeomseon.unity.attributes": "0.2.0",
     "com.jeomseon.unity.core": "0.1.0",
