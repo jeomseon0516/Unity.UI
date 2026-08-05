@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
-using Jeomseon.Extensions;
 
 namespace Jeomseon.UI.Components
 {
@@ -26,14 +25,22 @@ namespace Jeomseon.UI.Components
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (_rectTransforms.Any(rectTransform => rectTransform.CheckInClickPointer(eventData.pressEventCamera, eventData.position))) return;
+            if (_rectTransforms.Any(rectTransform =>
+                    RectTransformUtility.RectangleContainsScreenPoint(
+                        rectTransform,
+                        eventData.position,
+                        eventData.pressEventCamera))) return;
 
             _isClick = true;
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (_isClick && !_rectTransforms.Any(rectTransform => rectTransform.CheckInClickPointer(eventData.pressEventCamera, eventData.position)))
+            if (_isClick && !_rectTransforms.Any(rectTransform =>
+                    RectTransformUtility.RectangleContainsScreenPoint(
+                        rectTransform,
+                        eventData.position,
+                        eventData.pressEventCamera)))
                 OtherFunctions.Invoke();
 
             _isClick = false;

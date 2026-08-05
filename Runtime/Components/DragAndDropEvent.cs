@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using Jeomseon.Extensions;
 
 namespace Jeomseon.UI.Components
 {
@@ -52,7 +51,10 @@ namespace Jeomseon.UI.Components
                 yield return null;
                 time += Time.deltaTime;
 
-                if (!_rectTransform.CheckInClickPointer(eventData.pressEventCamera, Input.mousePosition))
+                if (!RectTransformUtility.RectangleContainsScreenPoint(
+                        _rectTransform,
+                        Input.mousePosition,
+                        eventData.pressEventCamera))
                 {
                     yield break;
                 }

@@ -19,6 +19,14 @@ namespace Jeomseon.UI
         private readonly Dictionary<string, BaseUI> _uiPool = new();
         private readonly List<BaseUI> _activeUIStack = new();
 
+        /* TODO(P0-01, lifecycle): Singleton과 UI 캐시가 Domain Reload 비활성화 및 씬 전환 환경에서
+         * 파괴된 UI 참조나 이전 활성 스택을 유지하지 않도록 초기화 정책을 검증합니다.
+         */
+        /* TODO(P1-01, editor-settings): Canvas와 UI 목록을 scene instance에 직접 하드코딩하지 않고
+         * UI catalog ScriptableObject에서 prefab, key, sorting, modal 및 close 정책을 설정하게 합니다.
+         * Custom Inspector에서 중복 key, 누락 prefab, BaseUI 타입 충돌을 빌드 전에 검증하고,
+         * scene object 직접 참조와 Addressables loader를 선택 가능한 런타임 전략으로 분리합니다.
+         */
         protected override void Init()
         {
             _uiPool.EnsureCapacity(_baseUIList.Count);
