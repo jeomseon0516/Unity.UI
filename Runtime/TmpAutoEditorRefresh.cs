@@ -8,8 +8,8 @@ namespace Jeomseon.UI
     [ExecuteAlways]
     public class TmpAutoEditorRefresh : MonoBehaviour
     {
-        [SerializeField, InitializeRequireComponent] private TextMeshProUGUI _targetText;
-        [SerializeField, InitializeRequireComponent] private RectTransform _contentToRefresh;
+        [SerializeField, GetOrAddComponent] private TextMeshProUGUI _targetText;
+        [SerializeField, GetOrAddComponent] private RectTransform _contentToRefresh;
 
         private string _lastValue;
 

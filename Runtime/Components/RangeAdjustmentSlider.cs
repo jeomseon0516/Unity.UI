@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using Jeomseon.Extensions;
 
 #if UNITY_EDITOR
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("com.jeomseon.ui.rangeadjustmentslider.editor")]
@@ -104,7 +103,11 @@ namespace Jeomseon.UI.Components
 
             if (_selectedHandle)
             {
-                Vector2 mouseLocalPosition = BackgroundBar.rectTransform.GetScreenToLocalPoint(TargetCamera, Input.mousePosition);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    BackgroundBar.rectTransform,
+                    Input.mousePosition,
+                    TargetCamera,
+                    out Vector2 mouseLocalPosition);
                 float normalizedX = (mouseLocalPosition.x + BackgroundBar.rectTransform.rect.width * 0.5f) / BackgroundBar.rectTransform.rect.width;
 
                 if (IsDivide)
@@ -160,12 +163,22 @@ namespace Jeomseon.UI.Components
 
         private void checkIntersectHandle(Image handle, bool isLeft)
         {
-            if (!Input.GetMouseButtonDown(0) || !handle.rectTransform.CheckInClickPointer(TargetCamera, Input.mousePosition)) return;
+            if (!Input.GetMouseButtonDown(0) ||
+                !RectTransformUtility.RectangleContainsScreenPoint(
+                    handle.rectTransform,
+                    Input.mousePosition,
+                    TargetCamera))
+            {
+                return;
+            }
 
             _isLeft = isLeft;
             _selectedHandle = handle;
         }
 
+        /* TODO(P2-01, api): UI Toolkit의 Slider 및 Pointer 이벤트로 대체할 수 있는 기능과
+         * 런타임 uGUI에서만 필요한 동작을 구분해 이 컨트롤의 유지 범위를 결정합니다.
+         */
         internal void Init()
         {
             BackgroundBar.rectTransform.sizeDelta = (transform as RectTransform).rect.size;
