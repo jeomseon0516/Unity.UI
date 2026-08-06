@@ -54,30 +54,37 @@ internal sealed class HorizontalEnumeratedItemEditor : UnityEditor.Editor
 
     public override void OnInspectorGUI()
     {
-        ActionEditorVertical(() =>
+        using (new EditorGUILayout.VerticalScope(GUI.skin.box))
         {
-            using EditorGUI.ChangeCheckScope scope = new();
-            EditorGUILayout.PropertyField(_viewport, new("Viewport", "열거된 아이템을 보여줄 UI 입니다 RectMask2D와 EventTrigger를 사용해주세요"), true);
-            EditorGUILayout.PropertyField(_content, new("Content", "실제 열거되어있는 아이템을 보관할 컨텐츠 입니다. 스크롤에 관한 기능은 컨텐츠를 사용합니다."), true);
+            using EditorGUI.ChangeCheckScope contentChangeScope = new();
+            EditorGUILayout.PropertyField(
+                _viewport,
+                new("Viewport", "열거된 아이템을 보여줄 UI 입니다 RectMask2D와 EventTrigger를 사용해주세요"), true);
+            EditorGUILayout.PropertyField(
+                _content,
+                new("Content", "실제 열거되어있는 아이템을 보관할 컨텐츠 입니다. 스크롤에 관한 기능은 컨텐츠를 사용합니다."), true);
 
-            if (scope.changed)
+            if (contentChangeScope.changed)
             {
                 serializedObject.ApplyModifiedProperties();
             }
-        }, GUI.skin.box);
+        }
         
         serializedObject.Update();
 
-        using EditorGUI.ChangeCheckScope scope = new();
+        using EditorGUI.ChangeCheckScope optionChangeScope = new();
         if (_viewport.objectReferenceValue && _content.objectReferenceValue)
         {
             RectTransform content = (RectTransform)_content.objectReferenceValue;
 
             EditorGUILayout.LabelField("Selected Index");
-            ActionEditorVertical(() => _selectedIndex.intValue = EditorGUILayout.IntSlider(_selectedIndex.intValue, 0, content.childCount - 1), GUI.skin.box);
+            using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+            {
+                _selectedIndex.intValue = EditorGUILayout.IntSlider(_selectedIndex.intValue, 0, content.childCount - 1);
+            }
 
             EditorGUILayout.LabelField("Content Option");
-            ActionEditorVertical(() =>
+            using (EditorGUILayout.VerticalScope _ = new(GUI.skin.box))
             {
                 EditorGUILayout.Slider(
                     _onPointerUpCorrection,
@@ -90,10 +97,10 @@ internal sealed class HorizontalEnumeratedItemEditor : UnityEditor.Editor
                     ElasticityLimit.Min,
                     ElasticityLimit.Max,
                     new GUIContent("Elasticity", "뷰포트 내부의 콘텐츠가 뷰포트 범위에서 벗어났을때 원래대로 돌아가려는 힘"));
-            }, GUI.skin.box);
+            }
 
             EditorGUILayout.LabelField("Item Option");
-            ActionEditorVertical(() =>
+            using (EditorGUILayout.VerticalScope _ = new(GUI.skin.box))
             {
                 EditorGUILayout.Slider(
                     _spacingRatio,
@@ -125,13 +132,13 @@ internal sealed class HorizontalEnumeratedItemEditor : UnityEditor.Editor
                             content.sizeDelta.x);
                     }
                 }
-            }, GUI.skin.box);
+            }
         }
 
         EditorGUILayout.LabelField("Event");
         EditorGUILayout.PropertyField(_onChangedValue, new GUIContent("OnChangedValue", "선택된 아이템이 변경될시 해당 아이템의 인덱스를 이벤트로 넘겨줍니다"), true);
 
-        if (scope.changed)
+        if (optionChangeScope.changed)
         {
             serializedObject.ApplyModifiedProperties();
         }
