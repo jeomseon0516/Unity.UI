@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Jeomseon.UI.Components;
-using static Jeomseon.Editor.EditorGUIHelper;
+using static Jeomseon.Editor.GUI.EditorGUILayoutActions;
 using static Jeomseon.Editor.SerializedPropertyReflection;
 using static Jeomseon.UI.Components.HorizontalEnumeratedItem;
 

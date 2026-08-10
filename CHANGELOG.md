@@ -1,5 +1,13 @@
 # 변경 기록
 
+## [0.3.2] - 2026-08-10
+
+- `EditorToolkit`의 `IMGUIHelper`가 `EditorGUILayoutActions`로 이전되면서 4개 Editor 파일이
+  참조하던 구 `Jeomseon.Editor.EditorGUIHelper`(존재하지 않는 타입)를 갱신했습니다. 이 개명
+  시점부터 Editor 어셈블리가 컴파일되지 않던 상태였던 것을 복구했습니다. 공개 API 변경은 없습니다.
+- `com.jeomseon.unity.editor-toolkit` 의존성을 0.4.0으로 올렸습니다(위 수정이 실제로 존재하는
+  버전을 최소 요구사항으로 명시하기 위함).
+
 ## [0.3.0] - 2026-07-29
 
 - 패키지 폴더 구조와 namespace를 일치시키고 Runtime·Editor·Samples 어셈블리의 `rootNamespace`를 정리했습니다.

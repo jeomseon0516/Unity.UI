@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
 using Jeomseon.UI.Components;
-using static Jeomseon.Editor.EditorGUIHelper;
+using static Jeomseon.Editor.GUI.EditorGUILayoutActions;
 using static Jeomseon.Editor.SerializedPropertyReflection;
 
 namespace Jeomseon.UI.Editor

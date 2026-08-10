@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
 using Jeomseon.UI.Components;
-using static Jeomseon.Editor.EditorGUIHelper;
+using static Jeomseon.Editor.GUI.EditorGUILayoutActions;
 using static Jeomseon.Editor.SerializedPropertyReflection;
 
 namespace Jeomseon.UI.Editor
