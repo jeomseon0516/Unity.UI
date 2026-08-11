@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace Jeomseon.UI.Components
 {
@@ -20,10 +21,10 @@ namespace Jeomseon.UI.Components
         [field: SerializeField] public UnityEvent<RectTransform, Camera, Vector2> OnDropEvent { get; set; }
 
         [Header("Dragging Copy Object"), Tooltip("Images에 들어간 이미지들은 순서에 맞게 렌더됩니다")]
-        [SerializeField]
-        private List<Image> _images;
-        [SerializeField]
-        private Image _rootImage;
+        [SerializeField, FormerlySerializedAs("_images")]
+        private List<Image> images;
+        [SerializeField, FormerlySerializedAs("_rootImage")]
+        private Image rootImage;
 
         private RectTransform _rectTransform = null;
 
@@ -71,30 +72,30 @@ namespace Jeomseon.UI.Components
             dragRect.sizeDelta = _rectTransform.rect.size;
 
             Image dragImage = dragObject.AddComponent<Image>();
-            dragImage.sprite = _rootImage.sprite;
-            dragImage.enabled = _rootImage.enabled;
-            dragImage.preserveAspect = _rootImage.preserveAspect;
+            dragImage.sprite = rootImage.sprite;
+            dragImage.enabled = rootImage.enabled;
+            dragImage.preserveAspect = rootImage.preserveAspect;
             dragImage.color = new(255f, 255f, 255f, DraggedAlpha);
 
-            checkMaskComponent(_rootImage, dragObject);
+            checkMaskComponent(rootImage, dragObject);
 
-            for (int i = 0; i < _images.Count; i++)
+            for (int i = 0; i < images.Count; i++)
             {
                 GameObject childObject = new($"child_{i + 1}");
                 childObject.transform.SetParent(dragObject.transform);
                 childObject.transform.localScale = new Vector3(1f, 1f, 1f);
 
                 RectTransform childRectTransform = childObject.AddComponent<RectTransform>();
-                childRectTransform.sizeDelta = _images[i].rectTransform.rect.size;
-                childRectTransform.transform.localPosition = _rootImage.rectTransform.InverseTransformPoint(_images[i].rectTransform.position);
+                childRectTransform.sizeDelta = images[i].rectTransform.rect.size;
+                childRectTransform.transform.localPosition = rootImage.rectTransform.InverseTransformPoint(images[i].rectTransform.position);
 
                 Image childImage = childObject.AddComponent<Image>();
-                childImage.sprite = _images[i].sprite;
-                childImage.enabled = _images[i].enabled;
-                childImage.preserveAspect = _images[i].preserveAspect;
+                childImage.sprite = images[i].sprite;
+                childImage.enabled = images[i].enabled;
+                childImage.preserveAspect = images[i].preserveAspect;
                 childImage.color = new(255f, 255f, 255f, DraggedAlpha);
 
-                checkMaskComponent(_images[i], childObject);
+                checkMaskComponent(images[i], childObject);
             }
 
             dragRect.SetAsLastSibling();

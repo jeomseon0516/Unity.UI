@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace Jeomseon.UI.Components
 {
@@ -10,15 +11,15 @@ namespace Jeomseon.UI.Components
     {
         public event UnityAction<PointerEventData> OnDropEvent
         {
-            add => _onDropEvent.AddListener(value);
-            remove => _onDropEvent.RemoveListener(value);
+            add => onDropEvent.AddListener(value);
+            remove => onDropEvent.RemoveListener(value);
         }
         
-        [SerializeField] private UnityEvent<PointerEventData> _onDropEvent = new();
+        [SerializeField, FormerlySerializedAs("_onDropEvent")] private UnityEvent<PointerEventData> onDropEvent = new();
         
         public void OnDrop(PointerEventData eventData)
         {
-            _onDropEvent.Invoke(eventData);
+            onDropEvent.Invoke(eventData);
         }
     }
 }

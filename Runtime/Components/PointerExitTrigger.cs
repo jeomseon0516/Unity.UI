@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace Jeomseon.UI.Components
 {
@@ -10,15 +11,15 @@ namespace Jeomseon.UI.Components
     {
         public event UnityAction<PointerEventData> OnPointerExitEvent
         {
-            add => _onPointerExitEvent.AddListener(value);
-            remove => _onPointerExitEvent.RemoveListener(value);
+            add => onPointerExitEvent.AddListener(value);
+            remove => onPointerExitEvent.RemoveListener(value);
         }
 
-        [SerializeField] private UnityEvent<PointerEventData> _onPointerExitEvent = new();
+        [SerializeField, FormerlySerializedAs("_onPointerExitEvent")] private UnityEvent<PointerEventData> onPointerExitEvent = new();
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            _onPointerExitEvent.Invoke(eventData);
+            onPointerExitEvent.Invoke(eventData);
         }
     }
 }

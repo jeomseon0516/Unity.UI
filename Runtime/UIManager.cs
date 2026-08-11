@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Jeomseon.UI
 {
@@ -11,11 +12,11 @@ namespace Jeomseon.UI
     public sealed class UIManager : Singleton<UIManager>
     {
         [Header("UI Canvas")]
-        [SerializeField]
-        private Canvas _canvas;
+        [SerializeField, FormerlySerializedAs("_canvas")]
+        private Canvas canvas;
 
-        [SerializeField]
-        private List<BaseUI> _baseUIList = new();
+        [SerializeField, FormerlySerializedAs("_baseUIList")]
+        private List<BaseUI> baseUIList = new();
         private readonly Dictionary<string, BaseUI> _uiPool = new();
         private readonly List<BaseUI> _activeUIStack = new();
 
@@ -29,16 +30,16 @@ namespace Jeomseon.UI
          */
         protected override void Init()
         {
-            _uiPool.EnsureCapacity(_baseUIList.Count);
+            _uiPool.EnsureCapacity(baseUIList.Count);
 
-            foreach (BaseUI baseUI in _baseUIList)
+            foreach (BaseUI baseUI in baseUIList)
             {
                 baseUI.SetActive(false);
                 _uiPool.Add(baseUI.GetType().Name, baseUI);
             }
 
-            _baseUIList.Clear();
-            _baseUIList = null;
+            baseUIList.Clear();
+            baseUIList = null;
         }
 
         public T OpenUI<T>() where T : BaseUI
@@ -114,6 +115,6 @@ namespace Jeomseon.UI
             }
         }
 
-        public void HideUI(bool isHide) => _canvas.gameObject.SetActive(!isHide);
+        public void HideUI(bool isHide) => canvas.gameObject.SetActive(!isHide);
     }
 }

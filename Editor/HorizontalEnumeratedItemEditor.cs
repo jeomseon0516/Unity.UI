@@ -44,12 +44,12 @@ internal sealed class HorizontalEnumeratedItemEditor : UnityEditor.Editor
         _viewport = serializedObject.FindProperty(GetBackingFieldName("Viewport"));
         _content = serializedObject.FindProperty(GetBackingFieldName("Content"));
         _onChangedValue = serializedObject.FindProperty(GetBackingFieldName("OnChangedValue"));
-        _spacingRatio = serializedObject.FindProperty("_spacingRatio");
-        _itemHeightRatioFromContentHeight = serializedObject.FindProperty("_itemHeightRatioFromContentHeight");
-        _itemWidthRatioFromHeight = serializedObject.FindProperty("_itemWidthRatioFromHeight");
-        _onPointerUpCorrection = serializedObject.FindProperty("_onPointerUpCorrection");
-        _elasticity = serializedObject.FindProperty("_elasticity");
-        _selectedIndex = serializedObject.FindProperty("_selectedIndex");
+        _spacingRatio = serializedObject.FindProperty("spacingRatio");
+        _itemHeightRatioFromContentHeight = serializedObject.FindProperty("itemHeightRatioFromContentHeight");
+        _itemWidthRatioFromHeight = serializedObject.FindProperty("itemWidthRatioFromHeight");
+        _onPointerUpCorrection = serializedObject.FindProperty("onPointerUpCorrection");
+        _elasticity = serializedObject.FindProperty("elasticity");
+        _selectedIndex = serializedObject.FindProperty("selectedIndex");
     }
 
     public override void OnInspectorGUI()

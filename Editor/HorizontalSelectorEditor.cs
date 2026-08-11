@@ -40,7 +40,7 @@ internal sealed class HorizontalSelectorEditor : UnityEditor.Editor
         _viewport = serializedObject.FindProperty(GetBackingFieldName("Viewport"));
         _content = serializedObject.FindProperty(GetBackingFieldName("Content"));
         _onChangedValue = serializedObject.FindProperty(GetBackingFieldName("OnChangedValue"));
-        _selectedIndex = serializedObject.FindProperty("_selectedIndex");
+        _selectedIndex = serializedObject.FindProperty("selectedIndex");
     }
 
     public override void OnInspectorGUI()

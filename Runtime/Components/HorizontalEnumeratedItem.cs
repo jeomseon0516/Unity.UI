@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("com.jeomseon.ui.horizontalenumerateditem.editor")]
@@ -46,8 +47,8 @@ namespace Jeomseon.UI.Components
         /// </summary>
         public float SpacingRatio
         {
-            get => _spacingRatio;
-            set => _spacingRatio = Mathf.Clamp(
+            get => spacingRatio;
+            set => spacingRatio = Mathf.Clamp(
                 value,
                 SpacingRatioLimit.Min,
                 SpacingRatioLimit.Max);
@@ -58,8 +59,8 @@ namespace Jeomseon.UI.Components
         /// </summary>
         public float ItemHeightRatioFromContentHeight
         {
-            get => _itemHeightRatioFromContentHeight;
-            set => _itemHeightRatioFromContentHeight = Mathf.Clamp(
+            get => itemHeightRatioFromContentHeight;
+            set => itemHeightRatioFromContentHeight = Mathf.Clamp(
                 value,
                 ItemHeightRatioFromContentHeightLimit.Min,
                 ItemHeightRatioFromContentHeightLimit.Max);
@@ -70,8 +71,8 @@ namespace Jeomseon.UI.Components
         /// </summary>
         public float ItemWidthRatioFromHeight
         {
-            get => _itemWidthRatioFromHeight;
-            set => _itemWidthRatioFromHeight = Mathf.Clamp(
+            get => itemWidthRatioFromHeight;
+            set => itemWidthRatioFromHeight = Mathf.Clamp(
                 value,
                 ItemWidthRatioFromHeightLimit.Min,
                 ItemWidthRatioFromHeightLimit.Max);
@@ -81,8 +82,8 @@ namespace Jeomseon.UI.Components
         /// </summary>
         public float OnPointerUpCorrection
         {
-            get => _onPointerUpCorrection;
-            set => _onPointerUpCorrection = Mathf.Clamp(
+            get => onPointerUpCorrection;
+            set => onPointerUpCorrection = Mathf.Clamp(
                 value,
                 OnPointerUpCorrectionLimit.Min,
                 OnPointerUpCorrectionLimit.Max);
@@ -93,8 +94,8 @@ namespace Jeomseon.UI.Components
         /// </summary>
         public float Elasticity
         {
-            get => _elasticity;
-            set => _elasticity = Mathf.Clamp(value,
+            get => elasticity;
+            set => elasticity = Mathf.Clamp(value,
                 ElasticityLimit.Min,
                 ElasticityLimit.Max);
         }
@@ -105,29 +106,29 @@ namespace Jeomseon.UI.Components
         /// </summary>
         public int SelectedIndex
         {
-            get => _selectedIndex;
+            get => selectedIndex;
             set
             {
-                if (_selectedIndex == value) return;
+                if (selectedIndex == value) return;
 
-                _selectedIndex = Mathf.Clamp(value, 0, Content.childCount - 1);
-                _targetPosition = GetContentLocalPositionFromSelectedIndex(_selectedIndex, Content.childCount, Content.sizeDelta.x);
-                OnChangedValue.Invoke(_selectedIndex);
+                selectedIndex = Mathf.Clamp(value, 0, Content.childCount - 1);
+                _targetPosition = GetContentLocalPositionFromSelectedIndex(selectedIndex, Content.childCount, Content.sizeDelta.x);
+                OnChangedValue.Invoke(selectedIndex);
             }
         }
 
-        [SerializeField]
-        private float _spacingRatio = 1f;
-        [SerializeField]
-        private float _itemHeightRatioFromContentHeight = 1f;
-        [SerializeField]
-        private float _itemWidthRatioFromHeight = 1f;
-        [SerializeField]
-        private float _elasticity = 1f;
-        [SerializeField]
-        private float _onPointerUpCorrection = 1f;
-        [SerializeField]
-        private int _selectedIndex = 0;
+        [SerializeField, FormerlySerializedAs("_spacingRatio")]
+        private float spacingRatio = 1f;
+        [SerializeField, FormerlySerializedAs("_itemHeightRatioFromContentHeight")]
+        private float itemHeightRatioFromContentHeight = 1f;
+        [SerializeField, FormerlySerializedAs("_itemWidthRatioFromHeight")]
+        private float itemWidthRatioFromHeight = 1f;
+        [SerializeField, FormerlySerializedAs("_elasticity")]
+        private float elasticity = 1f;
+        [SerializeField, FormerlySerializedAs("_onPointerUpCorrection")]
+        private float onPointerUpCorrection = 1f;
+        [SerializeField, FormerlySerializedAs("_selectedIndex")]
+        private int selectedIndex = 0;
 
         private bool _onDragged = false;
         private Vector2 _targetPosition = Vector2.zero;
@@ -146,7 +147,7 @@ namespace Jeomseon.UI.Components
                 Vector2 direction = (_targetPosition - (Vector2)Content.localPosition).normalized;
                 float distance = Vector2.Distance(_targetPosition, Content.localPosition);
 
-                Content.localPosition += new Vector3((direction * (distance * _onPointerUpCorrection)).x, 0f, 0f);
+                Content.localPosition += new Vector3((direction * (distance * onPointerUpCorrection)).x, 0f, 0f);
             }
         }
 
@@ -176,10 +177,10 @@ namespace Jeomseon.UI.Components
             content.pivot = new(0.5f, 0.5f);
             content.sizeDelta = new(content.sizeDelta.x, viewport.sizeDelta.y);
 
-            float itemHeight = content.sizeDelta.y * _itemHeightRatioFromContentHeight;
-            float itemWidth = itemHeight * _itemWidthRatioFromHeight;
+            float itemHeight = content.sizeDelta.y * itemHeightRatioFromContentHeight;
+            float itemWidth = itemHeight * itemWidthRatioFromHeight;
             float itemHalfWidth = itemWidth * 0.5f;
-            float itemSpacing = itemWidth * _spacingRatio;
+            float itemSpacing = itemWidth * spacingRatio;
 
             content.sizeDelta = new((itemWidth + itemSpacing) * content.childCount, content.sizeDelta.y);
             float contentHalfWidth = content.sizeDelta.x * 0.5f;
@@ -195,12 +196,12 @@ namespace Jeomseon.UI.Components
                 itemRectTransform.pivot = new(0.5f, 0.5f);
                 itemRectTransform.sizeDelta = new(itemWidth, itemHeight);
                 itemRectTransform.localPosition = new(
-                    normalizedX * content.sizeDelta.x - contentHalfWidth + itemSpacing + (1 - _spacingRatio) * itemHalfWidth,
+                    normalizedX * content.sizeDelta.x - contentHalfWidth + itemSpacing + (1 - spacingRatio) * itemHalfWidth,
                     0f,
                     0f);
             }
 
-            _targetPosition = GetContentLocalPositionFromSelectedIndex(_selectedIndex, Content.childCount, Content.sizeDelta.x);
+            _targetPosition = GetContentLocalPositionFromSelectedIndex(selectedIndex, Content.childCount, Content.sizeDelta.x);
         }
 
         internal static Vector3 GetContentLocalPositionFromSelectedIndex(int selectedIndex, int childCount, float contentSizeX)
@@ -230,7 +231,7 @@ namespace Jeomseon.UI.Components
                 float distance = viewportWorldRight.x - contentWorldLeft.x;
 
                 float normalizedX = Mathf.Clamp(distance / viewportHalfWidth, 0f, 1f);
-                pointerEventData.delta *= normalizedX * _elasticity;
+                pointerEventData.delta *= normalizedX * elasticity;
             }
 
             if (contentWorldRight.x < Viewport.position.x) // .. RIGHT
@@ -239,7 +240,7 @@ namespace Jeomseon.UI.Components
                 float distance = contentWorldRight.x - viewportWorldLeft.x;
 
                 float normalizedX = Mathf.Clamp(distance / viewportHalfWidth, 0f, 1f);
-                pointerEventData.delta *= normalizedX * _elasticity;
+                pointerEventData.delta *= normalizedX * elasticity;
             }
 
             Content.localPosition += new Vector3(pointerEventData.delta.x, 0f, 0f);
@@ -256,8 +257,8 @@ namespace Jeomseon.UI.Components
 
         public void SetSelectedIndexWithOutNotify(int selectedIndex)
         {
-            _selectedIndex = selectedIndex;
-            _targetPosition = GetContentLocalPositionFromSelectedIndex(_selectedIndex, Content.childCount, Content.sizeDelta.x);
+            this.selectedIndex = selectedIndex;
+            _targetPosition = GetContentLocalPositionFromSelectedIndex(selectedIndex, Content.childCount, Content.sizeDelta.x);
         }
 
         public void AddItems(IEnumerable<GameObject> items)

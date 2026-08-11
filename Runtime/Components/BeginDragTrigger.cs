@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace Jeomseon.UI.Components
 {
@@ -10,15 +11,15 @@ namespace Jeomseon.UI.Components
     {
         public event UnityAction<PointerEventData> OnBeginDragEvent
         {
-            add => _onBeginDragEvent.AddListener(value);
-            remove => _onBeginDragEvent.RemoveListener(value);
+            add => onBeginDragEvent.AddListener(value);
+            remove => onBeginDragEvent.RemoveListener(value);
         }
         
-        [SerializeField] private UnityEvent<PointerEventData> _onBeginDragEvent = new();        
+        [SerializeField, FormerlySerializedAs("_onBeginDragEvent")] private UnityEvent<PointerEventData> onBeginDragEvent = new();        
         
         public void OnBeginDrag(PointerEventData eventData)
         {
-            _onBeginDragEvent.Invoke(eventData);
+            onBeginDragEvent.Invoke(eventData);
         }
     }
 }

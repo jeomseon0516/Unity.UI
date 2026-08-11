@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace Jeomseon.UI.Components
 {
@@ -10,15 +11,15 @@ public class ScrollTrigger : MonoBehaviour, IScrollHandler
 {
     public event UnityAction<PointerEventData> OnScrollEvent
     {
-        add => _onScrollEvent.AddListener(value);
-        remove => _onScrollEvent.RemoveListener(value);
+        add => onScrollEvent.AddListener(value);
+        remove => onScrollEvent.RemoveListener(value);
     }
     
-    [SerializeField] private UnityEvent<PointerEventData> _onScrollEvent = new();
+    [SerializeField, FormerlySerializedAs("_onScrollEvent")] private UnityEvent<PointerEventData> onScrollEvent = new();
     
     public void OnScroll(PointerEventData eventData)
     {
-        _onScrollEvent.Invoke(eventData);
+        onScrollEvent.Invoke(eventData);
     }
 }
 }

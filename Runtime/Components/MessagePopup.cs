@@ -3,38 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Serialization;
 
 namespace Jeomseon.UI.Components
 {
     public sealed class MessagePopup : BaseUI
     {
         [Header("Button")]
-        [SerializeField]
-        private Button _okButton;
+        [SerializeField, FormerlySerializedAs("_okButton")]
+        private Button okButton;
 
         [Header("Text")]
-        [SerializeField]
-        private TMP_Text _warningText;
-        [SerializeField]
-        private TMP_Text _titleText;
+        [SerializeField, FormerlySerializedAs("_warningText")]
+        private TMP_Text warningText;
+        [SerializeField, FormerlySerializedAs("_titleText")]
+        private TMP_Text titleText;
 
         public string WarningText
         {
-            get => _warningText.text;
-            set => _warningText.text = value;
+            get => warningText.text;
+            set => warningText.text = value;
         }
 
         public string TitleText
         {
-            get => _titleText.text;
-            set => _titleText.text = value;
+            get => titleText.text;
+            set => titleText.text = value;
         }
 
         protected override void EnableUI() { }
 
         private void Start()
         {
-            _okButton.onClick.AddListener(() => UIManager.Instance.CloseUI(this));
+            okButton.onClick.AddListener(() => UIManager.Instance.CloseUI(this));
         }
     }
 }

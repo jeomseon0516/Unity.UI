@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("com.jeomseon.ui.rangeadjustmentslider.editor")]
@@ -35,39 +36,39 @@ namespace Jeomseon.UI.Components
 
         public float LeftValue
         {
-            get => _leftValue;
-            set => _leftValue = Mathf.Clamp(value, 0f, _rightValue);
+            get => leftValue;
+            set => leftValue = Mathf.Clamp(value, 0f, rightValue);
         }
 
         public float RightValue
         {
-            get => _rightValue;
-            set => _rightValue = Mathf.Clamp(value, _leftValue, 1f);
+            get => rightValue;
+            set => rightValue = Mathf.Clamp(value, leftValue, 1f);
         }
 
         public int LeftIntValue
         {
-            get => _leftIntValue;
-            set => _leftIntValue = Mathf.Clamp(value, 0, _rightIntValue - 1);
+            get => leftIntValue;
+            set => leftIntValue = Mathf.Clamp(value, 0, rightIntValue - 1);
         }
 
         public int RightIntValue
         {
-            get => _rightIntValue;
-            set => _rightIntValue = Mathf.Clamp(value, _leftIntValue + 1, DivideValue);
+            get => rightIntValue;
+            set => rightIntValue = Mathf.Clamp(value, leftIntValue + 1, DivideValue);
         }
 
         public float HandleSize => BackgroundBar ? BackgroundBar.rectTransform.rect.height * HandleSizeRatio : 0.0f;
 
-        [SerializeField]
-        private float _leftValue = 0f;
-        [SerializeField]
-        private float _rightValue = 1f;
+        [SerializeField, FormerlySerializedAs("_leftValue")]
+        private float leftValue = 0f;
+        [SerializeField, FormerlySerializedAs("_rightValue")]
+        private float rightValue = 1f;
 
-        [SerializeField]
-        private int _leftIntValue = 0;
-        [SerializeField]
-        private int _rightIntValue = 1;
+        [SerializeField, FormerlySerializedAs("_leftIntValue")]
+        private int leftIntValue = 0;
+        [SerializeField, FormerlySerializedAs("_rightIntValue")]
+        private int rightIntValue = 1;
 
         private Image _selectedHandle = null;
         private bool _isLeft = false;
@@ -141,13 +142,13 @@ namespace Jeomseon.UI.Components
 
             if (IsDivide)
             {
-                setHandleLocalPositionAndNotify(LeftHandle, GetIntValueToLocalPosition(_leftIntValue), () => OnChangedLeftIntValue.Invoke(_leftIntValue));
-                setHandleLocalPositionAndNotify(RightHandle, GetIntValueToLocalPosition(_rightIntValue), () => OnChangedRightIntValue.Invoke(_rightIntValue));
+                setHandleLocalPositionAndNotify(LeftHandle, GetIntValueToLocalPosition(leftIntValue), () => OnChangedLeftIntValue.Invoke(leftIntValue));
+                setHandleLocalPositionAndNotify(RightHandle, GetIntValueToLocalPosition(rightIntValue), () => OnChangedRightIntValue.Invoke(rightIntValue));
             }
             else
             {
-                setHandleLocalPositionAndNotify(LeftHandle, GetValueToLocalPosition(_leftValue), () => OnChangedLeftValue.Invoke(_leftValue));
-                setHandleLocalPositionAndNotify(RightHandle, GetValueToLocalPosition(_rightValue), () => OnChangedRightValue.Invoke(_rightValue));
+                setHandleLocalPositionAndNotify(LeftHandle, GetValueToLocalPosition(leftValue), () => OnChangedLeftValue.Invoke(leftValue));
+                setHandleLocalPositionAndNotify(RightHandle, GetValueToLocalPosition(rightValue), () => OnChangedRightValue.Invoke(rightValue));
             }
 
             SetFrontBarSizeAndLocalPosition();

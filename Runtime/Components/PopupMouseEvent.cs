@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace Jeomseon.UI.Components
 {
@@ -18,14 +19,14 @@ namespace Jeomseon.UI.Components
         [field: SerializeField] public UnityEvent OtherFunctions { get; private set; }
 
         [Header("Targets")]
-        [SerializeField]
-        private List<RectTransform> _rectTransforms;
+        [SerializeField, FormerlySerializedAs("_rectTransforms")]
+        private List<RectTransform> rectTransforms;
 
         private bool _isClick = false;
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (_rectTransforms.Any(rectTransform =>
+            if (rectTransforms.Any(rectTransform =>
                     RectTransformUtility.RectangleContainsScreenPoint(
                         rectTransform,
                         eventData.position,
@@ -36,7 +37,7 @@ namespace Jeomseon.UI.Components
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (_isClick && !_rectTransforms.Any(rectTransform =>
+            if (_isClick && !rectTransforms.Any(rectTransform =>
                     RectTransformUtility.RectangleContainsScreenPoint(
                         rectTransform,
                         eventData.position,
@@ -52,7 +53,7 @@ namespace Jeomseon.UI.Components
         }
 
 
-        public void AddUI(params RectTransform[] rectTransforms) => _rectTransforms.AddRange(rectTransforms);
-        public void DeleteUI(params RectTransform[] rectTransforms) => _rectTransforms.RemoveAll(rectTransforms.Contains);
+        public void AddUI(params RectTransform[] rectTransforms) => this.rectTransforms.AddRange(rectTransforms);
+        public void DeleteUI(params RectTransform[] rectTransforms) => this.rectTransforms.RemoveAll(rectTransforms.Contains);
     }
 }

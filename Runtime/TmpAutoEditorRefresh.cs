@@ -2,14 +2,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Jeomseon.Attribute;
+using UnityEngine.Serialization;
 
 namespace Jeomseon.UI
 {
     [ExecuteAlways]
     public class TmpAutoEditorRefresh : MonoBehaviour
     {
-        [SerializeField, GetOrAddComponent] private TextMeshProUGUI _targetText;
-        [SerializeField, GetOrAddComponent] private RectTransform _contentToRefresh;
+        [SerializeField, GetOrAddComponent, FormerlySerializedAs("_targetText")] private TextMeshProUGUI targetText;
+        [SerializeField, GetOrAddComponent, FormerlySerializedAs("_contentToRefresh")] private RectTransform contentToRefresh;
 
         private string _lastValue;
 
@@ -17,11 +18,11 @@ namespace Jeomseon.UI
         {
             if (!Application.isPlaying)
             {
-                if (_targetText == null) return;
+                if (targetText == null) return;
 
-                if (_lastValue != _targetText.text)
+                if (_lastValue != targetText.text)
                 {
-                    _lastValue = _targetText.text;
+                    _lastValue = targetText.text;
                     Refresh();
                 }
             }
@@ -29,12 +30,12 @@ namespace Jeomseon.UI
 
         private void Refresh()
         {
-            _targetText.ForceMeshUpdate();
+            targetText.ForceMeshUpdate();
 
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_targetText.rectTransform);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(targetText.rectTransform);
 
-            if (_contentToRefresh != null)
-                LayoutRebuilder.ForceRebuildLayoutImmediate(_contentToRefresh);
+            if (contentToRefresh != null)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(contentToRefresh);
 
             Canvas.ForceUpdateCanvases();
         }

@@ -62,10 +62,10 @@ internal sealed class RangeAdjustmentSliderEditor : UnityEditor.Editor
         _rightHandle = serializedObject.FindProperty(GetBackingFieldName("RightHandle"));
         _backgroundBar = serializedObject.FindProperty(GetBackingFieldName("BackgroundBar"));
         _frontBar = serializedObject.FindProperty(GetBackingFieldName("FrontBar"));
-        _leftValue = serializedObject.FindProperty("_leftValue");
-        _rightValue = serializedObject.FindProperty("_rightValue");
-        _leftIntValue = serializedObject.FindProperty("_leftIntValue");
-        _rightIntValue = serializedObject.FindProperty("_rightIntValue");
+        _leftValue = serializedObject.FindProperty("leftValue");
+        _rightValue = serializedObject.FindProperty("rightValue");
+        _leftIntValue = serializedObject.FindProperty("leftIntValue");
+        _rightIntValue = serializedObject.FindProperty("rightIntValue");
         _handleSizeRatio = serializedObject.FindProperty(GetBackingFieldName("HandleSizeRatio"));
         _divideOption.IsDivide = serializedObject.FindProperty(GetBackingFieldName("IsDivide"));
         _divideOption.DivideValue = serializedObject.FindProperty(GetBackingFieldName("DivideValue"));

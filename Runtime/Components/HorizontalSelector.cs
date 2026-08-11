@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("com.jeomseon.ui.horizontal.selector.editor")]
@@ -29,25 +30,25 @@ namespace Jeomseon.UI.Components
         /// </summary>
         public int SelectedIndex
         {
-            get => _selectedIndex;
+            get => selectedIndex;
             set
             {
-                if (_selectedIndex == value) return;
+                if (selectedIndex == value) return;
 
-                _selectedIndex = Mathf.Clamp(value, 0, Content.childCount - 1);
+                selectedIndex = Mathf.Clamp(value, 0, Content.childCount - 1);
 
                 _targetPosition = GetTargetPosition(
-                    _selectedIndex,
+                    selectedIndex,
                     Content.childCount,
                     Content.sizeDelta.x,
                     Viewport.sizeDelta.x);
 
-                OnChangedValue.Invoke(_selectedIndex);
+                OnChangedValue.Invoke(selectedIndex);
             }
         }
 
-        [SerializeField]
-        private int _selectedIndex = 0;
+        [SerializeField, FormerlySerializedAs("_selectedIndex")]
+        private int selectedIndex = 0;
 
         private Vector2 _targetPosition = Vector2.zero;
 
@@ -85,10 +86,10 @@ namespace Jeomseon.UI.Components
 
         public void SetSelectedIndexWithOutNotify(int selectedIndex)
         {
-            _selectedIndex = Mathf.Clamp(selectedIndex, 0, Content.childCount - 1);
+            selectedIndex = Mathf.Clamp(selectedIndex, 0, Content.childCount - 1);
 
             _targetPosition = GetTargetPosition(
-                _selectedIndex,
+                selectedIndex,
                 Content.childCount,
                 Content.sizeDelta.x,
                 Viewport.sizeDelta.x);
@@ -126,7 +127,7 @@ namespace Jeomseon.UI.Components
             }
 
             _targetPosition = GetTargetPosition(
-                _selectedIndex,
+                selectedIndex,
                 Content.childCount,
                 Content.sizeDelta.x,
                 Viewport.sizeDelta.x);

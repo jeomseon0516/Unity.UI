@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace Jeomseon.UI.Components
 {
@@ -10,15 +11,15 @@ public class UpdateSelectedTrigger : MonoBehaviour, IUpdateSelectedHandler
 {
     public event UnityAction<BaseEventData> OnUpdateSelectedEvent
     {
-        add => _onUpdateSelectedEvent.AddListener(value);
-        remove => _onUpdateSelectedEvent.RemoveListener(value);
+        add => onUpdateSelectedEvent.AddListener(value);
+        remove => onUpdateSelectedEvent.RemoveListener(value);
     }
     
-    [SerializeField] private UnityEvent<BaseEventData> _onUpdateSelectedEvent = new();
+    [SerializeField, FormerlySerializedAs("_onUpdateSelectedEvent")] private UnityEvent<BaseEventData> onUpdateSelectedEvent = new();
     
     public void OnUpdateSelected(BaseEventData eventData)
     {
-        _onUpdateSelectedEvent.Invoke(eventData);
+        onUpdateSelectedEvent.Invoke(eventData);
     }
 }
 }

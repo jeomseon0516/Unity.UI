@@ -1,5 +1,18 @@
 # 변경 기록
 
+## [Unreleased]
+
+## [0.3.3] - 2026-08-11
+
+- 워크스페이스 명명 규칙에 맞춰 워크스페이스 전역 `[SerializeField] private` 필드를
+  `_camelCase`에서 `camelCase`로 정리하고 기존 이름을 `[FormerlySerializedAs]`로 보존했습니다.
+  관련 `HorizontalEnumeratedItemEditor`/`RangeAdjustmentSliderEditor`/`HorizontalSelectorEditor`의
+  `FindProperty` 문자열도 함께 갱신했습니다. 리네이밍 과정에서 실제 결함 2건을 발견해 함께
+  수정했습니다: `HorizontalEnumeratedItem.SetSelectedIndexWithOutNotify`가 매개변수와 필드 이름이
+  같아지며 자기 대입(no-op)이 되던 문제, `PopupMouseEvent.AddUI`/`DeleteUI`가 매개변수 배열과
+  필드를 혼동해 컴파일이 깨지던 문제. 공개 API 변경은 없으며 기존 Scene·Prefab의 직렬화된 값은
+  그대로 유지됩니다.
+
 ## [0.3.2] - 2026-08-10
 
 - `EditorToolkit`의 `IMGUIHelper`가 `EditorGUILayoutActions`로 이전되면서 4개 Editor 파일이
