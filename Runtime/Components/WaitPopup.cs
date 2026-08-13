@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
-using Jeomseon.Coroutine;
+using Jeomseon.Unity.Coroutines;
 using UnityEngine.Serialization;
 
-namespace Jeomseon.UI.Components
+namespace Jeomseon.Unity.UI.Components
 {
     public sealed class WaitPopup : BaseUI
     {

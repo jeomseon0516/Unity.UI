@@ -7,7 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
-namespace Jeomseon.UI.Components
+namespace Jeomseon.Unity.UI.Components
 {
     using static UIHelper;
 

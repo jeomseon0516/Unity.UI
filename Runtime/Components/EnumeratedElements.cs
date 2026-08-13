@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("com.jeomseon.ui.enumeratedelements.editor")]
 #endif
 
-namespace Jeomseon.UI.Components
+namespace Jeomseon.Unity.UI.Components
 {
     [RequireComponent(typeof(GridLayoutGroup)), RequireComponent(typeof(ContentSizeFitter)), DisallowMultipleComponent]
     public sealed class EnumeratedElements : MonoBehaviour

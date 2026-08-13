@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using Jeomseon.Singleton;
+using Jeomseon.Unity.Singleton;
 using UnityEngine.Serialization;
 
-namespace Jeomseon.UI
+namespace Jeomseon.Unity.UI
 {
     public sealed class ResolutionObserver : Singleton<ResolutionObserver>
     {

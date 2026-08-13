@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Jeomseon.UI
+namespace Jeomseon.Unity.UI
 {
-    using Singleton;
+    using Jeomseon.Unity.Singleton;
 
     public sealed class UIManager : Singleton<UIManager>
     {

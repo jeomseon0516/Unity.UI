@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Serialization;
 
-namespace Jeomseon.UI.Components
+namespace Jeomseon.Unity.UI.Components
 {
     public sealed class MessagePopup : BaseUI
     {

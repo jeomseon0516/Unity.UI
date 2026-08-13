@@ -1,4 +1,4 @@
-using Jeomseon.UI.Components;
+using Jeomseon.Unity.UI.Components;
 using UnityEngine;
 using UnityEngine.EventSystems;
 

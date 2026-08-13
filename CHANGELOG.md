@@ -1,6 +1,9 @@
 # 변경 기록
 
-## [Unreleased]
+## [0.4.0] - 2026-08-13
+
+- **(Breaking)** Runtime/Editor 네임스페이스를 패키지 규칙에 맞춰 `Jeomseon.Unity.UI[.Components]`와
+  `Jeomseon.Unity.UI.Editor`로 변경했습니다. 이전 `Jeomseon.UI` 호환 별칭은 제공하지 않습니다.
 
 ## [0.3.3] - 2026-08-11
 

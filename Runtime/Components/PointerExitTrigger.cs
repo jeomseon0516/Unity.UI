@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
-namespace Jeomseon.UI.Components
+namespace Jeomseon.Unity.UI.Components
 {
     public class PointerExitTrigger : MonoBehaviour, IPointerExitHandler
     {

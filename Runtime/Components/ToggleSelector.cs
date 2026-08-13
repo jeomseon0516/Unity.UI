@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-namespace Jeomseon.UI.Components
+namespace Jeomseon.Unity.UI.Components
 {
     [DisallowMultipleComponent, RequireComponent(typeof(ToggleGroup))]
     public sealed class ToggleSelector : MonoBehaviour

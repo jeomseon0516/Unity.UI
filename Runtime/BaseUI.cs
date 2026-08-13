@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Jeomseon.UI
+namespace Jeomseon.Unity.UI
 {
     [DisallowMultipleComponent, RequireComponent(typeof(Canvas)), RequireComponent(typeof(GraphicRaycaster))]
     public abstract class BaseUI : MonoBehaviour, ISerializationCallbackReceiver

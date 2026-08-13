@@ -1,6 +1,6 @@
 {
   "name": "Jeomseon.Unity.UI",
-  "rootNamespace": "Jeomseon.UI",
+  "rootNamespace": "Jeomseon.Unity.UI",
   "references": [
     "Jeomseon.Unity.Attributes",
     "Jeomseon.Unity.Core",

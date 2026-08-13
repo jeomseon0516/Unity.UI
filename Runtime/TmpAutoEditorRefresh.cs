@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Jeomseon.Attribute;
+using Jeomseon.Unity.Attributes;
 using UnityEngine.Serialization;
 
-namespace Jeomseon.UI
+namespace Jeomseon.Unity.UI
 {
     [ExecuteAlways]
     public class TmpAutoEditorRefresh : MonoBehaviour

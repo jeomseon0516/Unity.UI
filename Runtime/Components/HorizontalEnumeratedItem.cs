@@ -11,7 +11,7 @@ using UnityEngine.Serialization;
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("com.jeomseon.ui.horizontalenumerateditem.editor")]
 #endif
 
-namespace Jeomseon.UI.Components
+namespace Jeomseon.Unity.UI.Components
 {
     [DisallowMultipleComponent]
     public sealed class HorizontalEnumeratedItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler

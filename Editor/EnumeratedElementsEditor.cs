@@ -2,11 +2,11 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
-using Jeomseon.UI.Components;
-using static Jeomseon.Editor.GUI.EditorGUILayoutActions;
-using static Jeomseon.Editor.SerializedPropertyReflection;
+using Jeomseon.Unity.UI.Components;
+using static Jeomseon.Unity.EditorToolkit.Editor.GUI.EditorGUILayoutActions;
+using static Jeomseon.Unity.EditorToolkit.Editor.SerializedPropertyReflection;
 
-namespace Jeomseon.UI.Editor
+namespace Jeomseon.Unity.UI.Editor
 {
 [CustomEditor(typeof(EnumeratedElements))]
 internal sealed class EnumeratedElementsEditor : UnityEditor.Editor

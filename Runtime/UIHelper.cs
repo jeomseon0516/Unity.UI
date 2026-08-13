@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.EventSystems;
 
-namespace Jeomseon.UI
+namespace Jeomseon.Unity.UI
 {
     public static class UIHelper
     {

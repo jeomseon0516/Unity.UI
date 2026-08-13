@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
-using Jeomseon.UI.Components;
-using static Jeomseon.Editor.GUI.EditorGUILayoutActions;
-using static Jeomseon.Editor.SerializedPropertyReflection;
+using Jeomseon.Unity.UI.Components;
+using static Jeomseon.Unity.EditorToolkit.Editor.GUI.EditorGUILayoutActions;
+using static Jeomseon.Unity.EditorToolkit.Editor.SerializedPropertyReflection;
 
-namespace Jeomseon.UI.Editor
+namespace Jeomseon.Unity.UI.Editor
 {
 [CustomEditor(typeof(RangeAdjustmentSlider))]
 internal sealed class RangeAdjustmentSliderEditor : UnityEditor.Editor

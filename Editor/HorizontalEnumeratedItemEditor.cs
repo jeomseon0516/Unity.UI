@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using Jeomseon.UI.Components;
-using static Jeomseon.Editor.GUI.EditorGUILayoutActions;
-using static Jeomseon.Editor.SerializedPropertyReflection;
-using static Jeomseon.UI.Components.HorizontalEnumeratedItem;
+using Jeomseon.Unity.UI.Components;
+using static Jeomseon.Unity.EditorToolkit.Editor.GUI.EditorGUILayoutActions;
+using static Jeomseon.Unity.EditorToolkit.Editor.SerializedPropertyReflection;
+using static Jeomseon.Unity.UI.Components.HorizontalEnumeratedItem;
 
-namespace Jeomseon.UI.Editor
+namespace Jeomseon.Unity.UI.Editor
 {
 [CustomEditor(typeof(HorizontalEnumeratedItem))]
 internal sealed class HorizontalEnumeratedItemEditor : UnityEditor.Editor
