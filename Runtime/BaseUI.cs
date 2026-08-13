@@ -1,11 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Jeomseon.Unity.UI
 {
-    [DisallowMultipleComponent, RequireComponent(typeof(Canvas)), RequireComponent(typeof(GraphicRaycaster))]
+    [DisallowMultipleComponent, 
+     RequireComponent(typeof(Canvas)), 
+     RequireComponent(typeof(GraphicRaycaster))]
     public abstract class BaseUI : MonoBehaviour, ISerializationCallbackReceiver
     {
         public bool ActiveSelf => Canvas.enabled;
