@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:sample="Jeomseon.Samples.UI">
+    <Style src="UIBasicUsageSample.uss" />
+    <sample:PopupView>
+        <ui:VisualElement name="backdrop" class="backdrop">
+            <ui:VisualElement name="popup" class="popup">
+                <ui:Label text="Popup layer" class="popup-title" />
+                <ui:Label text="The backdrop owns modal input blocking." class="popup-description" />
+                <ui:Button name="close-button" text="Close" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </sample:PopupView>
+</ui:UXML>

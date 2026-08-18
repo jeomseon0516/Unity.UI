@@ -1,0 +1,26 @@
+.screen {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 32px;
+    background-color: rgb(24, 28, 38);
+    color: rgb(235, 239, 248);
+}
+
+.title { font-size: 28px; -unity-font-style: bold; margin-bottom: 18px; }
+.section-title { font-size: 18px; -unity-font-style: bold; margin-top: 10px; margin-bottom: 8px; }
+.carousel-host { height: 150px; }
+.sample-carousel { flex-grow: 1; }
+.carousel-item { align-items: center; justify-content: center; background-color: rgb(53, 103, 176); border-radius: 10px; font-size: 18px; -unity-text-align: middle-center; }
+.selection-label { margin-top: 6px; -unity-text-align: middle-center; }
+.button-row { flex-direction: row; justify-content: center; margin-top: 8px; margin-bottom: 12px; }
+.button-row > Button { min-width: 120px; margin-left: 4px; margin-right: 4px; }
+.grid-host { flex-grow: 1; min-height: 220px; }
+.sample-grid { flex-grow: 1; }
+.grid-item { align-items: center; justify-content: center; background-color: rgb(65, 73, 92); border-radius: 6px; -unity-text-align: middle-center; }
+.backdrop { position: absolute; left: 0; right: 0; top: 0; bottom: 0; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.65); }
+.popup { width: 420px; padding: 28px; border-radius: 12px; background-color: rgb(245, 247, 252); color: rgb(24, 28, 38); }
+.popup-title { font-size: 22px; -unity-font-style: bold; margin-bottom: 8px; }
+.popup-description { margin-bottom: 18px; }
