@@ -24,7 +24,7 @@ namespace Jeomseon.Unity.UI.Components
             get => _selectedIndex;
             set
             {
-                int clamped = Mathf.Clamp(value, 0, Mathf.Max(0, _content.childCount - 1));
+                var clamped = Mathf.Clamp(value, 0, Mathf.Max(0, _content.childCount - 1));
                 if (clamped == _selectedIndex) return;
 
                 SetSelectedIndexWithoutNotify(clamped);
@@ -62,6 +62,8 @@ namespace Jeomseon.Unity.UI.Components
             RegisterCallback<PointerDownEvent>(OnPointerDown);
             RegisterCallback<PointerMoveEvent>(OnPointerMove);
             RegisterCallback<PointerUpEvent>(OnPointerUp);
+            RegisterCallback<PointerCancelEvent>(OnPointerCancel);
+            RegisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOut);
         }
 
         public void SetSelectedIndexWithoutNotify(int index)
@@ -81,7 +83,7 @@ namespace Jeomseon.Unity.UI.Components
 
         public void AddItems(IEnumerable<VisualElement> items)
         {
-            foreach (VisualElement item in items) _content.Add(item);
+            foreach (var item in items) _content.Add(item);
             Reflow();
         }
 
@@ -95,11 +97,16 @@ namespace Jeomseon.Unity.UI.Components
         {
             if (float.IsNaN(resolvedStyle.height) || float.IsNaN(resolvedStyle.width)) return;
 
-            float itemHeight = resolvedStyle.height * ItemHeightRatio;
-            float itemWidth = itemHeight * ItemWidthToHeightRatio;
-            float spacing = itemWidth * SpacingRatio;
+            // .. 높이가 0이면 아이템 크기도 0이 되어 전부 한 점에 겹칩니다. 레이아웃이 아직
+            // .. 확정되지 않았거나 부모 flex가 이 영역을 눌러 없앤 상태이므로, 기존 크기를
+            // .. 유지하고 다음 GeometryChangedEvent를 기다립니다.
+            if (resolvedStyle.height <= 0f) return;
 
-            foreach (VisualElement item in _content.Children())
+            var itemHeight = resolvedStyle.height * ItemHeightRatio;
+            var itemWidth = itemHeight * ItemWidthToHeightRatio;
+            var spacing = itemWidth * SpacingRatio;
+
+            foreach (var item in _content.Children())
             {
                 item.style.width = itemWidth;
                 item.style.height = itemHeight;
@@ -116,41 +123,41 @@ namespace Jeomseon.Unity.UI.Components
 
         private float GetOffsetForIndex(int index)
         {
-            int count = _content.childCount;
+            var count = _content.childCount;
             if (count == 0) return 0f;
 
-            float stride = GetItemStride();
-            float itemWidth = stride / (1f + SpacingRatio);
-            float itemCenter = index * stride + itemWidth * 0.5f;
+            var stride = GetItemStride();
+            var itemWidth = stride / (1f + SpacingRatio);
+            var itemCenter = index * stride + itemWidth * 0.5f;
 
             return resolvedStyle.width * 0.5f - itemCenter;
         }
 
         private int GetNearestIndex(float offset)
         {
-            int count = _content.childCount;
-            float stride = GetItemStride();
+            var count = _content.childCount;
+            var stride = GetItemStride();
             if (count == 0 || stride <= 0f) return _selectedIndex;
 
-            float itemWidth = stride / (1f + SpacingRatio);
-            float viewportCenter = resolvedStyle.width * 0.5f;
-            float rawIndex = (viewportCenter - offset - itemWidth * 0.5f) / stride;
+            var itemWidth = stride / (1f + SpacingRatio);
+            var viewportCenter = resolvedStyle.width * 0.5f;
+            var rawIndex = (viewportCenter - offset - itemWidth * 0.5f) / stride;
 
             return Mathf.Clamp(Mathf.RoundToInt(rawIndex), 0, count - 1);
         }
 
         private float GetItemStride()
         {
-            float itemHeight = resolvedStyle.height * ItemHeightRatio;
-            float itemWidth = itemHeight * ItemWidthToHeightRatio;
+            var itemHeight = resolvedStyle.height * ItemHeightRatio;
+            var itemWidth = itemHeight * ItemWidthToHeightRatio;
 
             return itemWidth * (1f + SpacingRatio);
         }
 
         private float ApplyElasticity(float rawOffset)
         {
-            float maxOffset = GetOffsetForIndex(0);
-            float minOffset = GetOffsetForIndex(_content.childCount - 1);
+            var maxOffset = GetOffsetForIndex(0);
+            var minOffset = GetOffsetForIndex(_content.childCount - 1);
 
             if (rawOffset > maxOffset) return maxOffset + (rawOffset - maxOffset) * Elasticity;
             if (rawOffset < minOffset) return minOffset + (rawOffset - minOffset) * Elasticity;
@@ -180,7 +187,7 @@ namespace Jeomseon.Unity.UI.Components
         {
             if (!_dragging || !this.HasPointerCapture(evt.pointerId)) return;
 
-            float delta = evt.position.x - _dragStartPointerX;
+            var delta = evt.position.x - _dragStartPointerX;
             _currentOffset = ApplyElasticity(_dragStartOffset + delta);
             _content.style.translate = new Translate(_currentOffset, 0);
         }
@@ -189,9 +196,27 @@ namespace Jeomseon.Unity.UI.Components
         {
             if (!_dragging) return;
 
-            _dragging = false;
             this.ReleasePointer(evt.pointerId);
+            FinishDrag();
+        }
 
+        private void OnPointerCancel(PointerCancelEvent evt)
+        {
+            if (!_dragging) return;
+
+            FinishDrag();
+        }
+
+        private void OnPointerCaptureOut(PointerCaptureOutEvent evt)
+        {
+            if (!_dragging) return;
+
+            FinishDrag();
+        }
+
+        private void FinishDrag()
+        {
+            _dragging = false;
             SelectedIndex = GetNearestIndex(_currentOffset);
         }
     }

@@ -34,6 +34,7 @@ namespace Jeomseon.Samples.UI
             this.Q<Button>("previous-button").clicked += carousel.SelectPrevious;
             this.Q<Button>("next-button").clicked += carousel.SelectNext;
             this.Q<Button>("popup-button").clicked += Channel.RequestOpen<PopupView>;
+            this.Q<Button>("loading-button").clicked += Channel.RequestOpen<LoadingView>;
             this.Q("carousel-host").Add(carousel);
 
             var grid = new UIGrid

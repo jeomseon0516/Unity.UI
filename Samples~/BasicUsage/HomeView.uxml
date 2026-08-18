@@ -1,4 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:sample="Jeomseon.Samples.UI">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:sample="Jeomseon.Samples.UI" xmlns:jui="Jeomseon.Unity.UI.Components">
     <Style src="UIBasicUsageSample.uss" />
     <sample:HomeView class="screen home-screen">
         <ui:Label text="Jeomseon UI Toolkit" class="title" />
@@ -9,8 +9,11 @@
             <ui:Button name="previous-button" text="Previous" />
             <ui:Button name="next-button" text="Next" />
             <ui:Button name="popup-button" text="Open Popup" />
+            <ui:Button name="loading-button" text="Open System Toast" />
         </ui:VisualElement>
         <ui:Label text="Responsive UIGrid" class="section-title" />
-        <ui:VisualElement name="grid-host" class="grid-host" />
+        <jui:UIScrollView name="grid-scroll" class="grid-scroll">
+            <ui:VisualElement name="grid-host" class="grid-host" />
+        </jui:UIScrollView>
     </sample:HomeView>
 </ui:UXML>

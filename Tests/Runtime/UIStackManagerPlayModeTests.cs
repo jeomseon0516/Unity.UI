@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Jeomseon.Unity.UI;
 using Jeomseon.Unity.UI.Channels;
@@ -16,6 +15,10 @@ namespace Jeomseon.Tests
         }
 
         private sealed class TestScreenB : UIView
+        {
+        }
+
+        private sealed class TestScreenC : UIView
         {
         }
 
@@ -74,6 +77,28 @@ namespace Jeomseon.Tests
         }
 
         [UnityTest]
+        public IEnumerator OpenThenClose_SystemLayer_TogglesVisibility()
+        {
+            // .. System은 로딩/알림처럼 Popup 위에 항상 떠야 하는 레이어입니다(ADR-0008 3절).
+            // .. Screen/Popup과 동등하게 등록·열기·닫기가 되는지 검증합니다.
+            var channel = ScriptableObject.CreateInstance<UIChannel>();
+            UIStackManager manager = CreateManager(channel);
+            TestScreenC screen = CreateScreen<TestScreenC>(channel);
+            manager.RegisterScreen(UILayer.System, screen);
+
+            channel.RequestOpen<TestScreenC>();
+            yield return null;
+
+            Assert.That(screen.IsVisible, Is.True);
+            Assert.That(manager.GetUI<TestScreenC>(), Is.SameAs(screen));
+
+            channel.RequestClose(screen);
+            yield return null;
+
+            Assert.That(screen.IsVisible, Is.False);
+        }
+
+        [UnityTest]
         public IEnumerator RegisterScreen_IgnoresDuplicateTypeWithoutThrowing()
         {
             UIStackManager manager = CreateManager();
@@ -118,22 +143,47 @@ namespace Jeomseon.Tests
             UIStackManager manager = CreateManager(channel);
             TestScreenA screen = CreateScreen<TestScreenA>(channel);
             manager.RegisterScreen(UILayer.Screen, screen);
-            Type openedType = null;
-            Type closedType = null;
-            channel.ScreenOpened += screenType => openedType = screenType;
-            channel.ScreenClosed += screenType => closedType = screenType;
+            UIView openedScreen = null;
+            UIView closedScreen = null;
+            channel.ScreenOpened += openedScreenArg => openedScreen = openedScreenArg;
+            channel.ScreenClosed += closedScreenArg => closedScreen = closedScreenArg;
 
             channel.RequestOpen<TestScreenA>();
             yield return null;
 
             Assert.That(screen.IsVisible, Is.True);
-            Assert.That(openedType, Is.EqualTo(typeof(TestScreenA)));
+            Assert.That(openedScreen, Is.SameAs(screen));
 
             channel.RequestClose(screen);
             yield return null;
 
             Assert.That(screen.IsVisible, Is.False);
-            Assert.That(closedType, Is.EqualTo(typeof(TestScreenA)));
+            Assert.That(closedScreen, Is.SameAs(screen));
+        }
+
+        [UnityTest]
+        public IEnumerator Channel_CloseAllRequest_HidesEveryLayerAndNotifiesOnce()
+        {
+            var channel = ScriptableObject.CreateInstance<UIChannel>();
+            UIStackManager manager = CreateManager(channel);
+            TestScreenA screen = CreateScreen<TestScreenA>(channel);
+            TestScreenB popup = CreateScreen<TestScreenB>(channel);
+            manager.RegisterScreen(UILayer.Screen, screen);
+            manager.RegisterScreen(UILayer.Popup, popup);
+
+            int notificationCount = 0;
+            channel.AllScreensClosed += () => notificationCount++;
+
+            channel.RequestOpen<TestScreenA>();
+            channel.RequestOpen<TestScreenB>();
+            yield return null;
+
+            channel.RequestCloseAll();
+            yield return null;
+
+            Assert.That(screen.IsVisible, Is.False);
+            Assert.That(popup.IsVisible, Is.False);
+            Assert.That(notificationCount, Is.EqualTo(1));
         }
     }
 }

@@ -2,6 +2,27 @@
 
 ## [Unreleased]
 
+- `Components/UIScrollView`와 `Components/ScrollDragManipulator`를 추가했습니다. UI Toolkit
+  `ScrollView`는 콘텐츠 드래그 스크롤·고무줄 오버스크롤·관성을 **터치 입력에서만** 지원하는데
+  (Unity의 의도된 설계), 이 확장은 포인터 타입을 구분하지 않아 마우스에서도 uGUI `ScrollRect`와
+  동등하게 동작합니다. 로직은 `ScrollDragManipulator`에 있어 기존 `ScrollView`/`ListView`에도
+  `AddManipulator`로 붙일 수 있고, `UIScrollView`는 UXML/UI Builder에서 바로 쓰도록 이를 기본
+  부착한 `[UxmlElement]` 서브클래스입니다. `DragThreshold`를 넘을 때만 포인터를 가로채므로 자식
+  `Button`의 클릭은 그대로 동작합니다. `DragHorizontal`/`DragVertical`로 드래그 축을 제한할 수
+  있습니다(uGUI `ScrollRect`의 Horizontal/Vertical 체크박스에 대응).
+- **(Fix)** `UICarousel`이 자기 높이가 `0`일 때도 아이템 크기를 계산해, 부모 flex가 영역을 눌러
+  없앤 상태에서 모든 아이템이 한 점에 겹치던 문제를 수정했습니다. 높이가 유효하지 않으면 기존
+  크기를 유지하고 다음 `GeometryChangedEvent`를 기다립니다.
+- `UIStackManager`에 Edit Mode 미리보기를 추가했습니다. `[CustomEditor] UIStackManagerEditor`가
+  Inspector에서 선택될 때 기존 `Initialize(UIChannel)`을 호출하고 Screen 레이어의 첫 화면을
+  표시하며, 선택 해제될 때 `ClearCatalog()`로 정리합니다. Play Mode 및 그 진입 전환 중에는
+  개입하지 않습니다(`Application.isPlaying` +
+  `EditorApplication.isPlayingOrWillChangePlaymode` 가드). `UIStackManager` 런타임 동작은
+  변경되지 않았고, `Editor/` asmdef가 이 기능 하나만을 위해 다시 추가됐습니다.
+  `ClearCatalog()`를 `internal`로 열었습니다.
+- `Samples~/BasicUsage/UIBasicUsageSample.unity`에 `Main Camera`(Clear Flags: Solid Color)를
+  추가했습니다. UI Toolkit 전용 Scene이라도 Camera가 하나도 없으면 프레임버퍼가 클리어되지 않아
+  이전 프레임이 잔상으로 남습니다.
 - **(Breaking, `ADR-0008`)** `UIManager`/`BaseUI`(uGUI `Canvas`/`GraphicRaycaster` 기반)를 제거하고
   `UIStackManager`/`UIView`(`UIDocument`/`VisualElement` 기반)로 전면 재설계했습니다.
   - `UIStackManager`는 타입 기반 화면 조회·등록, 레이어(`UILayer`: `Screen`/`Popup`/`System`)별 열림
@@ -18,10 +39,14 @@
     닫으면 무관한 UI까지 전부 닫힘, `baseUIList` 중복 타입 등록 시 예외)은 새 구현에서 구조적으로
     발생하지 않거나(`UIView`는 `VisualElement`라 Unity native 파괴 개념이 없음) 동일하게
     방어합니다.
-  - `UIStackManager`는 처리 완료를 `UIChannel.ScreenOpened(Type)`/`ScreenClosed(Type)`/
+  - `UIStackManager`는 처리 완료를 `UIChannel.ScreenOpened(UIView)`/`ScreenClosed(UIView)`/
     `AllScreensClosed()`로 발행합니다. 런타임 소비자는 Manager가 아니라 채널을 구독합니다.
-    Inspector 영구 리스너는 선택적 `UIChannelListener`가 Type을 문자열로 변환해 private
-    UnityEvent로 중계합니다.
+    `ScreenOpened`/`ScreenClosed`는 화면 `Type`이 아니라 실제 `UIView` 인스턴스를 전달합니다(코드
+    구독자는 `view.GetType()`/`is` 패턴으로 타입도 얻을 수 있어 정보 손실이 없습니다).
+    Inspector 영구 리스너는 선택적 `UIChannelListener`가 `UnityEvent<UIView>`(Dynamic 바인딩)로
+    직접 중계합니다 — Dynamic 모드는 인자를 직렬화하지 않고 런타임 값을 그대로 전달하므로
+    `UIView`(`VisualElement` 파생, `UnityEngine.Object` 아님)를 그대로 넘겨도 Inspector에서
+    정상 동작하며, 이전의 `Type`→문자열 변환 우회는 필요 없어졌습니다.
   - 외부 코드가 채널 알림을 우회하지 않도록 `UIStackManager.GetUI`/`OpenUI`/`CloseUI`/
     `CloseAllUI` public API를 제거했습니다. 열기·닫기 요청은 `UIChannel`만 사용합니다.
 - **(Breaking)** UI Toolkit이 이미 동등 기능을 기본 제공하는 uGUI 컴포넌트를 삭제했습니다(재구현
@@ -42,12 +67,18 @@
   `ResolutionObserver`를 제거했습니다. UI Toolkit에서는 대상 `VisualElement`의
   `GeometryChangedEvent`를 구독합니다. 이 제거로 `Jeomseon.Unity.Singleton` 의존성도
   완전히 제거했습니다.
+- **(Fix)** `UIGrid.ItemWidthToHeightRatio`가 이름과 반대로 `height = width * ratio`로 계산되던
+  결함을 `height = width / ratio`로 수정해 `UICarousel`의 같은 이름 프로퍼티(`width = height *
+  ratio`)와 의미를 통일했습니다(`ratio = width / height`).
 - `Tests/Runtime/UIStackManagerPlayModeTests`를 추가했습니다(열기/닫기 가시성, 중복 등록 무시, 스택에
-  없는 화면 닫기 무동작, `UIChannel` Request 이벤트 도달). `dotnet build` 기준 Runtime/Editor/Tests
-  컴파일 오류 0개. Unity Test Runner 실행은 확인 대기 중입니다.
+  없는 화면 닫기 무동작, `UIChannel` Request 이벤트 도달, 전체 레이어 닫기와 완료 알림, `System`
+  레이어 열기/닫기). `dotnet build` 기준 Runtime/Editor/Tests 컴파일 오류 0개. Unity Test Runner
+  실행은 확인 대기 중입니다.
 - `Samples~/BasicUsage`를 UI Toolkit 기반으로 다시 작성했습니다. 즉시 실행 가능한 Scene에서
-  `UIChannel` 카탈로그, `Screen`/`Popup` 레이어, backdrop 입력 차단, `UICarousel` 버튼·드래그 선택,
-  반응형 `UIGrid`를 함께 확인할 수 있습니다. Unity Editor에서의 시각·조작 검증은 대기 중입니다.
+  `UIChannel` 카탈로그, `Screen`/`Popup`/`System`(`LoadingView`, backdrop 없는 비모달 토스트) 레이어,
+  backdrop 입력 차단, `UICarousel` 버튼·드래그 선택, 반응형 `UIGrid`를 함께 확인할 수 있습니다.
+  Unity Editor에서의 시각·조작 검증은 대기 중이며, TestProject에 Sample을 다시 Import해야 이번
+  변경사항(`LoadingView` 포함)이 반영됩니다.
 
 ## [0.4.0] - 2026-08-13
 

@@ -17,19 +17,19 @@ namespace Jeomseon.Unity.UI.Channels
         internal event Action<UIView> CloseRequested;
         internal event Action CloseAllRequested;
 
-        public event UnityAction<Type> ScreenOpened;
-        public event UnityAction<Type> ScreenClosed;
+        public event UnityAction<UIView> ScreenOpened;
+        public event UnityAction<UIView> ScreenClosed;
         public event UnityAction AllScreensClosed;
 
         public void RequestOpen<T>() where T : UIView => OpenRequested?.Invoke(typeof(T));
         public void RequestClose(UIView screen) => CloseRequested?.Invoke(screen);
         public void RequestCloseAll() => CloseAllRequested?.Invoke();
 
-        internal void NotifyScreenOpened(Type screenType)
-            => ScreenOpened?.Invoke(screenType);
+        internal void NotifyScreenOpened(UIView screen)
+            => ScreenOpened?.Invoke(screen);
 
-        internal void NotifyScreenClosed(Type screenType)
-            => ScreenClosed?.Invoke(screenType);
+        internal void NotifyScreenClosed(UIView screen)
+            => ScreenClosed?.Invoke(screen);
 
         internal void NotifyAllScreensClosed() => AllScreensClosed?.Invoke();
     }

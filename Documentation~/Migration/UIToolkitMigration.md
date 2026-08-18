@@ -18,9 +18,11 @@ visualElement.RegisterCallback<GeometryChangedEvent>(evt =>
 
 `UIStackManager.GetUI`/`OpenUI`/`CloseUI`/`CloseAllUI`는 제거되었습니다. 외부 코드는 Manager를
 직접 참조하지 않고 `UIChannel.RequestOpen<T>()`, `RequestClose(view)`, `RequestCloseAll()`을
-사용합니다. 처리 완료는 같은 채널의 `ScreenOpened(Type)`, `ScreenClosed(Type)`,
-`AllScreensClosed()`를 구독합니다. 문자열 변환은 Inspector 중계 컴포넌트인
-`UIChannelListener` 내부에서만 수행합니다.
+사용합니다. 처리 완료는 같은 채널의 `ScreenOpened(UIView)`, `ScreenClosed(UIView)`,
+`AllScreensClosed()`를 구독합니다. `Type`이 아니라 실제 화면 인스턴스가 전달되므로 코드
+구독자는 `view.GetType()`이나 `is` 패턴으로 필요한 타입 정보를 얻습니다. Inspector에서
+연결하려면 선택적 `UIChannelListener`의 `UnityEvent<UIView>` 필드를 사용합니다(Dynamic
+바인딩이라 `UIView`가 `UnityEngine.Object`가 아니어도 정상 동작합니다).
 
 ## 화면 카탈로그 타입 문자열 제거
 

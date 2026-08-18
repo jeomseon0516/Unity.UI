@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:sample="Jeomseon.Samples.UI">
+    <Style src="UIBasicUsageSample.uss" />
+    <sample:LoadingView class="loading-toast">
+        <ui:Label text="System layer" class="loading-title" />
+        <ui:Label text="No backdrop: Popup below stays clickable." class="loading-description" />
+        <ui:Button name="dismiss-button" text="Dismiss" />
+    </sample:LoadingView>
+</ui:UXML>

@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:sample="Jeomseon.Samples.UI">
     <Style src="UIBasicUsageSample.uss" />
-    <sample:PopupView>
+    <sample:PopupView class="overlay">
         <ui:VisualElement name="backdrop" class="backdrop">
             <ui:VisualElement name="popup" class="popup">
                 <ui:Label text="Popup layer" class="popup-title" />

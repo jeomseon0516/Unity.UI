@@ -24,15 +24,42 @@ namespace Jeomseon.Unity.UI
             channel = uiChannel;
         }
 
-        private void Awake()
+        public void Initialize(UIChannel uiChannel)
         {
-            if (!document)
+            if (document == null)
             {
                 Debug.LogError($"{nameof(UIStackManager)} requires a {nameof(UIDocument)} reference.", this);
                 return;
             }
 
-            foreach (UILayer layer in (UILayer[])Enum.GetValues(typeof(UILayer)))
+            if (channel != null)
+            {
+                channel.OpenRequested -= HandleOpenRequested;
+                channel.CloseRequested -= HandleCloseRequested;
+                channel.CloseAllRequested -= HandleCloseAllRequested;
+            }
+
+            channel = uiChannel;
+            ClearCatalog();
+            BuildCatalog();
+
+            if (isActiveAndEnabled && channel != null)
+            {
+                channel.OpenRequested += HandleOpenRequested;
+                channel.CloseRequested += HandleCloseRequested;
+                channel.CloseAllRequested += HandleCloseAllRequested;
+            }
+        }
+
+        private void Awake()
+        {
+            if (!document) return;
+            BuildCatalog();
+        }
+
+        private void BuildCatalog()
+        {
+            foreach (var layer in (UILayer[])Enum.GetValues(typeof(UILayer)))
             {
                 var container = new VisualElement { name = layer.ToString(), pickingMode = PickingMode.Ignore };
                 container.StretchToParentSize();
@@ -44,10 +71,24 @@ namespace Jeomseon.Unity.UI
 
             if (!channel) return;
 
-            foreach (UIScreenEntry entry in channel.Entries)
+            foreach (var entry in channel.Entries)
             {
                 RegisterFromEntry(entry);
             }
+        }
+
+        internal void ClearCatalog()
+        {
+            foreach (var container in _layerContainers.Values)
+            {
+                container.RemoveFromHierarchy();
+            }
+
+            _layerContainers.Clear();
+            _activeStacks.Clear();
+            _uiPool.Clear();
+            _screenLayers.Clear();
+            _screenHosts.Clear();
         }
 
         private void OnEnable()
@@ -69,30 +110,30 @@ namespace Jeomseon.Unity.UI
         }
 
         internal T GetUI<T>() where T : UIView
-            => _uiPool.TryGetValue(typeof(T), out UIView screen) ? screen as T : null;
+            => _uiPool.TryGetValue(typeof(T), out var screen) ? screen as T : null;
 
         private void CloseAllUI()
         {
-            foreach (List<UIView> stack in _activeStacks.Values)
+            foreach (var stack in _activeStacks.Values)
             {
-                foreach (UIView screen in stack) screen.SetVisible(false);
+                foreach (var screen in stack) screen.SetVisible(false);
                 stack.Clear();
             }
         }
 
         private void HandleOpenRequested(Type screenType)
         {
-            if (!_uiPool.TryGetValue(screenType, out UIView screen)) return;
+            if (!_uiPool.TryGetValue(screenType, out var screen)) return;
 
             OpenScreen(screen);
-            channel.NotifyScreenOpened(screenType);
+            channel.NotifyScreenOpened(screen);
         }
 
         private void HandleCloseRequested(UIView screen)
         {
             if (!TryCloseUI(screen)) return;
 
-            channel.NotifyScreenClosed(screen.GetType());
+            channel.NotifyScreenClosed(screen);
         }
 
         private void HandleCloseAllRequested()
@@ -104,7 +145,7 @@ namespace Jeomseon.Unity.UI
         private bool TryCloseUI(UIView screen)
         {
             // .. 등록되지 않았거나 다른 레이어 소속이면 무시(레이어에 없으면 이미 닫힌 것으로 취급)
-            if (screen == null || !_screenLayers.TryGetValue(screen, out UILayer layer)) return false;
+            if (screen == null || !_screenLayers.TryGetValue(screen, out var layer)) return false;
             if (!_activeStacks[layer].Remove(screen)) return false;
 
             screen.SetVisible(false);
@@ -113,8 +154,8 @@ namespace Jeomseon.Unity.UI
 
         private void OpenScreen(UIView screen)
         {
-            UILayer layer = _screenLayers[screen];
-            List<UIView> stack = _activeStacks[layer];
+            var layer = _screenLayers[screen];
+            var stack = _activeStacks[layer];
 
             stack.Remove(screen);
             stack.Add(screen); // .. 최상단으로
@@ -131,8 +172,8 @@ namespace Jeomseon.Unity.UI
                 return;
             }
 
-            TemplateContainer host = entry.Layout.Instantiate();
-            UIView[] screens = host.Children().OfType<UIView>().ToArray();
+            var host = entry.Layout.Instantiate();
+            var screens = host.Children().OfType<UIView>().ToArray();
             if (screens.Length != 1)
             {
                 Debug.LogWarning(
@@ -141,7 +182,7 @@ namespace Jeomseon.Unity.UI
                 return;
             }
 
-            UIView screen = screens[0];
+            var screen = screens[0];
             screen.Initialize(channel);
             host.StretchToParentSize();
             host.pickingMode = PickingMode.Ignore;
@@ -154,7 +195,7 @@ namespace Jeomseon.Unity.UI
 
         private void RegisterScreen(UILayer layer, UIView screen, VisualElement host)
         {
-            Type screenType = screen.GetType();
+            var screenType = screen.GetType();
             if (!_uiPool.TryAdd(screenType, screen))
             {
                 Debug.LogWarning($"Duplicate UIView registration ignored for type '{screenType.Name}'.", this);
