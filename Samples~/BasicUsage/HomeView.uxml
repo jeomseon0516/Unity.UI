@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:sample="Jeomseon.Samples.UI">
+    <Style src="UIBasicUsageSample.uss" />
+    <sample:HomeView class="screen home-screen">
+        <ui:Label text="Jeomseon UI Toolkit" class="title" />
+        <ui:Label text="UICarousel" class="section-title" />
+        <ui:VisualElement name="carousel-host" class="carousel-host" />
+        <ui:Label name="selection-label" text="Selected: 1" class="selection-label" />
+        <ui:VisualElement class="button-row">
+            <ui:Button name="previous-button" text="Previous" />
+            <ui:Button name="next-button" text="Next" />
+            <ui:Button name="popup-button" text="Open Popup" />
+        </ui:VisualElement>
+        <ui:Label text="Responsive UIGrid" class="section-title" />
+        <ui:VisualElement name="grid-host" class="grid-host" />
+    </sample:HomeView>
+</ui:UXML>

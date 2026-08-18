@@ -1,5 +1,54 @@
 # 변경 기록
 
+## [Unreleased]
+
+- **(Breaking, `ADR-0008`)** `UIManager`/`BaseUI`(uGUI `Canvas`/`GraphicRaycaster` 기반)를 제거하고
+  `UIStackManager`/`UIView`(`UIDocument`/`VisualElement` 기반)로 전면 재설계했습니다.
+  - `UIStackManager`는 타입 기반 화면 조회·등록, 레이어(`UILayer`: `Screen`/`Popup`/`System`)별 열림
+    스택 북키핑, 정렬(`BringToFront`)만 관리합니다. 레이어 간·레이어 내 입력 차단은 UI Toolkit의
+    피킹에 맡기고 코드로 재구현하지 않습니다.
+  - `UIStackManager`와 `UIView`는 서로를 직접 참조하지 않고 `UIChannel`(ScriptableObject)을 통해서만
+    상호작용합니다(`channel.RequestOpen<T>()`/`RequestClose(view)`). `UIStackManager`는 일반
+    `MonoBehaviour`이며 정적 `Instance` 접근을 제공하지 않습니다.
+  - 화면 등록은 `UIChannel`의 카탈로그(`{Layer, VisualTreeAsset}` 엔트리)로 이루어집니다. UXML
+    루트가 `[UxmlElement] UIView` 파생 타입이므로 Layout과 화면 타입이 구조적으로 일치합니다.
+    기존 타입 문자열·전용 Drawer·`Type.GetType`·`TypeCache`·`Activator.CreateInstance`는
+    제거했습니다(`ROADMAP.md` P1-01).
+  - uGUI 시절의 결함(파괴된 UI가 활성 스택에 남아 `MissingReferenceException`, 등록되지 않은 UI를
+    닫으면 무관한 UI까지 전부 닫힘, `baseUIList` 중복 타입 등록 시 예외)은 새 구현에서 구조적으로
+    발생하지 않거나(`UIView`는 `VisualElement`라 Unity native 파괴 개념이 없음) 동일하게
+    방어합니다.
+  - `UIStackManager`는 처리 완료를 `UIChannel.ScreenOpened(Type)`/`ScreenClosed(Type)`/
+    `AllScreensClosed()`로 발행합니다. 런타임 소비자는 Manager가 아니라 채널을 구독합니다.
+    Inspector 영구 리스너는 선택적 `UIChannelListener`가 Type을 문자열로 변환해 private
+    UnityEvent로 중계합니다.
+  - 외부 코드가 채널 알림을 우회하지 않도록 `UIStackManager.GetUI`/`OpenUI`/`CloseUI`/
+    `CloseAllUI` public API를 제거했습니다. 열기·닫기 요청은 `UIChannel`만 사용합니다.
+- **(Breaking)** UI Toolkit이 이미 동등 기능을 기본 제공하는 uGUI 컴포넌트를 삭제했습니다(재구현
+  아님): Trigger 20종(`RegisterCallback<TEvent>()`로 대체), `RangeAdjustmentSlider`(→
+  `MinMaxSlider`), `ToggleSelector`(→ `RadioButtonGroup`), `PopupMouseEvent`(→ backdrop
+  `RegisterCallback<PointerDownEvent>`), `TmpAutoEditorRefresh`(UI Toolkit 텍스트에는 해당 문제
+  없음), `DragAndDropEvent`(네이티브 대응 없이 삭제, 필요해지면 재설계), `MessagePopup`/
+  `WaitPopup`(옛 `BaseUI` 상속이라 삭제). 대응 Custom Editor(`RangeAdjustmentSliderEditor` 등)도
+  함께 삭제했습니다.
+- **(Breaking)** `HorizontalSelector`+`HorizontalEnumeratedItem`(같은 문제를 두 번 구현한 중복
+  구현이었음)을 `Components/UICarousel`로 통합했습니다(`Draggable` 플래그로 드래그 지원 여부
+  선택). `EnumeratedElements`(콘텐츠 너비 비율 기반 반응형 그리드)는 `Components/UIGrid`로
+  대체했습니다. 둘 다 `[UxmlElement]` UI Toolkit 커스텀 컨트롤입니다. 드래그 물리(탄성/스냅 속도)
+  수치는 초기값이라 Unity에서 조정이 필요할 수 있습니다.
+- `com.unity.ugui`/`Unity.TextMeshPro` 의존성을 완전히 제거했습니다(`package.json`, Runtime/Editor
+  asmdef).
+- **(Breaking)** 매 프레임 `Screen.width`/`Screen.height`를 폴링하던 전역 Singleton
+  `ResolutionObserver`를 제거했습니다. UI Toolkit에서는 대상 `VisualElement`의
+  `GeometryChangedEvent`를 구독합니다. 이 제거로 `Jeomseon.Unity.Singleton` 의존성도
+  완전히 제거했습니다.
+- `Tests/Runtime/UIStackManagerPlayModeTests`를 추가했습니다(열기/닫기 가시성, 중복 등록 무시, 스택에
+  없는 화면 닫기 무동작, `UIChannel` Request 이벤트 도달). `dotnet build` 기준 Runtime/Editor/Tests
+  컴파일 오류 0개. Unity Test Runner 실행은 확인 대기 중입니다.
+- `Samples~/BasicUsage`를 UI Toolkit 기반으로 다시 작성했습니다. 즉시 실행 가능한 Scene에서
+  `UIChannel` 카탈로그, `Screen`/`Popup` 레이어, backdrop 입력 차단, `UICarousel` 버튼·드래그 선택,
+  반응형 `UIGrid`를 함께 확인할 수 있습니다. Unity Editor에서의 시각·조작 검증은 대기 중입니다.
+
 ## [0.4.0] - 2026-08-13
 
 - **(Breaking)** Runtime/Editor 네임스페이스를 패키지 규칙에 맞춰 `Jeomseon.Unity.UI[.Components]`와

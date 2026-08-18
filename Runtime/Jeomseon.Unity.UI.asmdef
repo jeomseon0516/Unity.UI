@@ -1,14 +1,7 @@
 {
   "name": "Jeomseon.Unity.UI",
   "rootNamespace": "Jeomseon.Unity.UI",
-  "references": [
-    "Jeomseon.Unity.Attributes",
-    "Jeomseon.Unity.Core",
-    "Jeomseon.Unity.Singleton",
-    "Jeomseon.Unity.Coroutines",
-    "UnityEngine.UI",
-    "Unity.TextMeshPro"
-  ],
+  "references": [],
   "autoReferenced": true,
   "noEngineReferences": false
 }
