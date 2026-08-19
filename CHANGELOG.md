@@ -1,6 +1,6 @@
 # 변경 기록
 
-## [Unreleased]
+## [0.5.0] - 2026-08-19
 
 - `Components/UIScrollView`와 `Components/ScrollDragManipulator`를 추가했습니다. UI Toolkit
   `ScrollView`는 콘텐츠 드래그 스크롤·고무줄 오버스크롤·관성을 **터치 입력에서만** 지원하는데
