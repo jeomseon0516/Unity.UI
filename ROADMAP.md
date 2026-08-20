@@ -319,6 +319,64 @@
 7. **P3-01 — Navigation·Transition 확장**
    - 화면 전환, history, modal, animation은 Core 관리자와 분리된 선택 계층으로 설계합니다.
 
+## 예정 — UIStackManager/UIChannel 구조 재설계 (2026-08-20 지시, 착수 전)
+
+사용자가 2026-08-20에 상세 스펙을 전달했습니다. **GridTileSystem 작업을 완료한 뒤** 이 패키지로
+돌아와 검토·착수합니다. ADR-0008의 핵심 원칙(`UIView`와 `UIStackManager`가 서로 직접 참조하지
+않고 `UIChannel`을 경유)은 그대로 유지하고, 전체 구조를 갈아엎지 않으며 기존 Public API와 동작을
+보존한 채 책임만 더 명확히 나눕니다. 요지:
+
+- **`UIChannel`에서 `UICatalog` 분리.** 지금 `UIChannel`이 "정적 UI Configuration(`List<UIScreenEntry>`)"과
+  "Runtime Message Channel(Open/Close Request·Notification)" 두 책임을 같이 갖고 있습니다.
+  `UICatalog : ScriptableObject`(`IReadOnlyList<UIScreenEntry> Entries`)를 새로 만들어 전자를
+  넘기고, `UIChannel`은 Request/Notification 채널 역할만 남깁니다.
+- **`UIChannel` 역할 인터페이스 분리 검토.** `UIView`가 `UIChannel` 구현체 전체가 아니라 필요한
+  최소 인터페이스만 보도록 `IUIRequester`(`RequestOpen<T>`/`RequestClose`/`RequestCloseAll`)와,
+  필요하면 `IUIEventSource`(Notification 쪽)로 나누는 것을 검토합니다. 인터페이스 분리가 복잡도만
+  늘리면 무리하게 세분화하지 않습니다.
+- **`UIStackManager` 책임 축소 후보**(전부 만들 필요는 없음, SRP상 실제 분리 가치가 있을 때만):
+  - `UIViewFactory` — UXML Instantiate → `UIView` 검증·초기화 → 생성 결과(예:
+    `UIViewInstance` record struct)를 반환. Stack 관리나 Layer 활성 상태는 여기 넣지 않습니다.
+  - `UIStackController` — Layer별 Stack 상태(Open/Close/CloseAll/ordering)를 가능하면
+    `MonoBehaviour`가 아닌 순수 C# 객체로 분리. `BringToFront()`/`SetVisible()` 같은 실제 UI
+    Toolkit 조작과 순수 Stack 상태 변경의 경계를 분석해서 나눕니다.
+  - `UIRegistry` — 규모가 작으면 Manager 내부에 남겨도 됩니다.
+  - `UIRoot`/`UIStackManager` 자신은 Unity Lifecycle + `UIDocument` + `UICatalog` + `UIChannel`을
+    연결하는 조합 루트로 남습니다.
+- **네이밍 정정.** `Dictionary<Type, UIView> _uiPool`은 실제 Object Pool(acquire/release)이
+  아니므로 `_screens`/`_registry`/`_screenRegistry` 등 의미에 맞는 이름으로 바꿉니다(추후 진짜
+  Pooling을 추가할 때 용어 충돌 방지).
+- **Lifecycle 정리.** 현재 `Awake→BuildCatalog`, `OnEnable→Subscribe`,
+  `Initialize→Unsubscribe+ClearCatalog+BuildCatalog+Subscribe`로 초기화 경로가 섞여 있습니다.
+  `Awake`=런타임 구성, `OnEnable`=구독, `OnDisable`=해제 원칙으로 정리하고, 런타임에 `UIChannel`을
+  바꿔야 하면 `Initialize()`가 전부 다시 하는 대신 `SetChannel(UIChannel newChannel)`처럼 명시적
+  의존성 교체 API를 씁니다. Catalog 재구축과 Channel 교체는 별개 책임으로 다룹니다.
+- **`ScriptableObject` 역할 경계.** `UICatalog.asset`=정적 설정, `UIChannel.asset`=런타임
+  통신/Scope 핸들로 명확히 나눕니다. `UIChannel`이 Audio/Save/Network/Player 같은 UI 외부
+  시스템까지 노출하는 싱글톤 대체 Service Locator가 되면 안 됩니다 — UI Scope 내부 통신만
+  담당합니다. "UI Scope"(`UIRoot`+`UICatalog`+`UIChannel`+`UIViewFactory`+`UIRegistry`+
+  `UIStackController`) 개념은 있지만, Screen/Popup/Overlay Layer용 하위 Scope 시스템처럼 지금
+  당장 필요하지 않은 확장은 미리 만들지 않습니다.
+- **금지 사항(ADR-0008 유지).** `UIView → UIStackManager` 또는 `UIStackManager → 특정 UIView
+  구현체` 직접 참조 금지. `UIView → IUIRequester → UIChannel → UI Runtime` 간접 통신만 허용.
+- **테스트 가능성.** UI 등록, 중복 타입 등록, Layer Stack ordering, Open/Close/CloseAll, 이미
+  닫힌/다른 Layer의 UIView 처리, Channel 요청 전달은 가능한 한 Scene 없이 테스트합니다. UXML
+  Instantiate·실제 `VisualElement` 동작처럼 Unity Runtime이 꼭 필요한 부분까지 억지로 순수 C#화
+  하지 않습니다.
+- **과도한 추상화 금지.** 클래스/인터페이스 수를 늘리는 게 목표가 아닙니다 — 명확한 책임이 있고
+  독립적으로 테스트·교체할 실질적 가치가 있을 때만 분리합니다. 구현체가 하나뿐이라는 이유만으로
+  인터페이스를 만들지 않습니다.
+- **기존 동작 보존 목록**(리팩터 중 변경 금지): `RequestOpen<T>()`, `UIView` Close, `CloseAll`,
+  Layer별 Stack, 동일 Screen 재오픈 시 Stack 최상단 이동, `BringToFront()`, `UIView` Visibility
+  관리, `ScreenOpened`/`ScreenClosed`/`AllScreensClosed`, 중복 `UIView` 타입 등록 방지, 잘못된
+  UXML Layout 검증, "하나의 Layout에 정확히 하나의 UIView" 정책.
+- **작업 순서 지시**: 현재 코드·테스트·Public API 전체 분석 → `UICatalog` 분리 → Lifecycle 정리 →
+  `_uiPool` 개명 → `UIViewFactory` 분리 여부 분석 후 구현 → `UIStackController` 분리 여부 분석 후
+  구현 → `IUIRequester` 등 인터페이스 도입 필요성 검토 → 기존 테스트 수정 → 테스트 보강 → 전체
+  테스트 실행 → Public API·기존 동작 회귀 확인 → 변경된 아키텍처(클래스별 책임, 의존 관계,
+  개선점, 확장 가능성) 문서화. 한 번에 전체 구조를 바꾸지 않고 이 순서를 따르며, 각 단계에서
+  기존 설계보다 실제로 책임·의존성이 명확해질 때만 변경합니다.
+
 ## 백로그
 
 - `DragAndDropEvent`의 UI Toolkit 재설계 여부(길게 눌러 복제 이미지를 드래그하는 특수 동작). 필요성
