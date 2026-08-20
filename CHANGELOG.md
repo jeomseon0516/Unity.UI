@@ -1,5 +1,15 @@
 # 변경 기록
 
+## [Unreleased]
+
+- `Samples~/BasicUsage`의 `UIChannelListener`에 `screenOpened`/`screenClosed`
+  `UnityEvent<UIView>` Dynamic listener 예시를 실제로 직렬화했습니다. Sample Console 로그에서
+  전달된 런타임 `UIView`의 구체 타입을 확인할 수 있습니다.
+- Unity 6000.5.7f1 PlayMode 테스트 6개를 실행해 전부 통과했고, macOS Development Player에서
+  Sample Camera의 프레임버퍼 클리어와 `HomeView` Dynamic listener 전달을 확인했습니다.
+- Basic Usage `UIScrollView`에 `vertical-page-size="0"`을 지정했습니다. Unity 기본 자동 페이지
+  이동 대신 스크롤바 트랙의 클릭 위치로 바로 이동합니다.
+
 ## [0.5.0] - 2026-08-19
 
 - `Components/UIScrollView`와 `Components/ScrollDragManipulator`를 추가했습니다. UI Toolkit

@@ -11,11 +11,16 @@
    방해하지 않는지도 함께 확인합니다.
    (기본 UI Toolkit `ScrollView`는 이 세 동작을 터치 입력에서만 지원합니다 — Unity의 의도된
    설계이며, `UIScrollView`가 마우스에서도 되도록 채웁니다.)
+   Sample은 `vertical-page-size="0"`을 지정해 스크롤바 트랙을 클릭하면 포인터 위치로 바로
+   이동합니다. Unity 기본값은 자동 페이지 이동이므로 클릭 지점까지 한 번에 이동하지 않습니다.
 4. Open Popup을 누른 뒤 팝업 내부 클릭은 유지되고, Close 또는 어두운 backdrop 클릭은 팝업만 닫는지 확인합니다.
 5. Open System Toast를 눌러 `System` 레이어 화면(`LoadingView`)이 우측 상단에 뜨는지 확인합니다.
    토스트를 띄운 채로 Open Popup을 눌러 팝업을 열면, 팝업의 어두운 backdrop 위로 토스트가 계속
    보이는지 확인합니다(System은 Popup보다 항상 위 레이어). 토스트는 backdrop이 없어 팝업이 열려
    있어도 계속 화면에 남아 있습니다. Dismiss로 닫습니다.
+6. Console에서 `UIChannelListener Dynamic UIView opened: HomeView` 로그를 확인합니다. Popup과
+   System Toast를 열고 닫으면 각 실제 `UIView` 타입의 opened/closed 로그도 출력됩니다. 이는
+   Scene에 직렬화된 `UnityEvent<UIView>` Dynamic listener가 런타임 인스턴스를 받는 예시입니다.
 
 Scene의 `UIStackManager`와 화면은 서로 직접 참조하지 않습니다. 같은 `UIChannel` 자산이 화면 카탈로그와 열기·닫기 요청 채널을 겸합니다.
 

@@ -47,7 +47,9 @@
      선택적 `UIChannelListener`가 `UnityEvent<UIView>`(Dynamic 바인딩)로 직접 중계합니다 —
      Dynamic 모드는 인자를 직렬화하지 않고 런타임 값을 그대로 넘기므로 `UnityEngine.Object`가
      아닌 `UIView`도 문제없이 Inspector에 노출됩니다(2026-08-18, `Type`→문자열 변환 방식에서
-     전환). 프로젝트 자산인 `UIChannel`이 Scene 객체를 직접 참조하지 않습니다.
+     전환). 프로젝트 자산인 `UIChannel`이 Scene 객체를 직접 참조하지 않습니다. 2026-08-19
+     `Samples~/BasicUsage` Scene에 `screenOpened`/`screenClosed` Dynamic listener를 실제 직렬화하고
+     Development Player에서 `HomeView` 런타임 인스턴스가 전달되는 것을 로그로 확인했습니다.
    - `OpenRequested`는 `Type`, `CloseRequested`는 `UIView` 인스턴스로 인자 타입이 다른데, 이는
      의도된 비대칭입니다(2026-08-18 확정). Open 요청 시점엔 아직 인스턴스가 없어 Type으로만 표현
      가능하고, Close 요청은 호출부가 이미 인스턴스를 쥐고 있는 경우(화면 자신의
@@ -57,10 +59,10 @@
      따릅니다.
    - Manager의 직접 `GetUI`/`OpenUI`/`CloseUI`/`CloseAllUI` public API는 제거했습니다. 외부 요청과
      완료 알림은 모두 `UIChannel`을 통과하며, 테스트용 화면 조회·등록 경계만 internal입니다.
-     - `Tests/Runtime/UIStackManagerPlayModeTests`(5개: 열기/닫기 가시성, 중복 등록 무시, 스택에 없는
-       화면 닫기 무동작, 채널 Request 이벤트 도달, 전체 레이어 닫기와 완료 알림)로 검증합니다. `dotnet build`로 Runtime/Editor/Tests
-     전부 컴파일 오류 0개 확인. **Unity Test Runner 실행 확인 대기**(TestProject가 사용자 Editor에서
-     열려 있어 이번 세션엔 배치모드 실행 불가).
+     - `Tests/Runtime/UIStackManagerPlayModeTests`(6개: 열기/닫기 가시성, System 레이어 열기/닫기,
+       중복 등록 무시, 스택에 없는 화면 닫기 무동작, 채널 Request 이벤트 도달, 전체 레이어 닫기와
+       완료 알림)로 검증합니다. `dotnet build`로 Runtime/Editor/Tests 전부 컴파일 오류 0개 확인.
+       Unity Test Runner PlayMode 6개도 2026-08-19 실행해 전부 통과했습니다(0.185초, 실패 0).
    - **나머지 uGUI `Components/*`는 UI Toolkit이 이미 동등 기능을 기본 제공하는지 개별 확인 후
      삭제했습니다**(재구현이 아니라 제거, 전부 실행 완료):
      - Trigger 20종(`PointerClickTrigger` 등 `I*Handler` 래퍼 전부) — `VisualElement.
@@ -106,18 +108,19 @@
    - `Samples~/BasicUsage`를 새 `UIStackManager`/`UIView` 기준으로 다시 작성했습니다(2026-08-18).
      `UIDocument`/`PanelSettings`/`UIChannel`, `HomeView(Screen)`/`PopupView(Popup)`를 실제 Scene에
      직렬화했으며 backdrop 입력 차단, `UICarousel`, `UIGrid`를 한 Scene에서 확인할 수 있습니다.
-     **Unity Editor 시각·조작 검증은 대기 중입니다.**
+     Development Player에서 Camera의 Solid Color 클리어와 초기 UI 렌더링을 확인했습니다
+     (2026-08-19). 나머지 전체 Editor 조작 검증은 아래 미검증 항목만 남습니다.
      - `LoadingView(System)`를 추가해 System 레이어 실사용 예시를 보강했습니다(2026-08-18, 이전엔
        Runtime/Sample/Tests 어디에도 System 레이어 사용처가 없었던 커버리지 공백을 해소).
        `HomeView`의 "Open System Toast" 버튼으로 열며, backdrop 없이 화면 일부만 덮는 비모달
        토스트라(ADR-0008 3절) Popup이 열려 있어도 그 위에 계속 표시됩니다. `UIChannel.asset`에
        `layer: 2`(System) 엔트리로 등록했습니다.
-     - **TestProject의 `Assets/Samples/Jeomseon Unity UI/0.4.0/Basic Usage`는 Unity Package
+     - **TestProject의 `Assets/Samples/Jeomseon Unity UI/0.5.0/Basic Usage`는 Unity Package
        Manager로 한 번 Import된 별도 복사본이라, 패키지 `Samples~`를 고쳐도 자동으로 갱신되지
        않습니다.** `LoadingView`를 포함한 이번 Sample 변경사항은 Unity에서 Sample을 다시
        Import해야 반영되고 검증 가능합니다 — 지금까지의 `dotnet build`
-       (`Jeomseon.Unity.UI.Samples.BasicUsage.csproj`) 통과는 재Import 전 기존 복사본만 검증한
-       것이라 `LoadingView.cs`/변경된 `HomeView` 등은 포함되지 않았습니다.
+       현재는 0.5.0 Sample을 다시 Import했고, Dynamic listener 예시까지 패키지 원본과 동기화해
+       Development Player 검증에 사용했습니다.
    - **`Editor/` 재도입 — `UIStackManager` Edit Mode 미리보기**(2026-08-18). uGUI Canvas와 달리
      `UIStackManager`의 화면 조립은 `Awake()`/`Initialize()` 등 일반 `MonoBehaviour` 생명주기에
      묶여 있어 Play Mode에서만 보였습니다. `UIStackManager` 런타임 코드 자체는 건드리지 않고,
@@ -252,22 +255,16 @@
        취소되지 않습니다. 필요해지면 `Tick()`에서 `scrollOffset`이 마지막으로 우리가 쓴 값과
        다른지 비교해 일괄 처리할 수 있지만, ScrollView의 픽셀 그리드 반올림 때문에 허용 오차를
        둬야 하며 잘못 잡으면 탄성이 매번 취소되므로 실측이 필요합니다.
-   - **미해결 — 스크롤바 트랙 클릭 위치가 부정확함**(2026-08-18 사용자 제보, 조사만 하고 보류).
+   - **해결 — 스크롤바 트랙 클릭 위치가 부정확함**(2026-08-19).
      스크롤바의 위치표시기(dragger) **바깥 트랙**을 클릭하면 이동하는 위치가 정확하지 않습니다.
-     - **우리 버그인지 미확정입니다.** 코드상 트랙 클릭 경로에서 우리가 하는 일은
+     - **우리 버그가 아니라 UI Toolkit 기본 동작으로 확정했습니다.** 코드상 트랙 클릭 경로에서 우리가 하는 일은
        `IsWithinScrollers` → `CancelAnimation()` → `return`뿐이고, 애니메이션이 돌지 않는 상태의
        `CancelAnimation()`은 현재 위치를 그대로 다시 쓰는 no-op이라 위치에 영향이 없어야 합니다.
-     - **가장 유력한 설명**: UI Toolkit 기본 동작입니다. 공식 문서상 `vertical-page-size`는
-       "키보드와 화면상 스크롤바 버튼(화살표·핸들) 사용 시 스크롤 속도"를 정하며, 트랙 클릭은
-       **클릭 지점으로 점프가 아니라 페이지 단위 이동**으로 보입니다. 그러면 트랙 아래쪽을 눌러도
-       한 페이지만 움직여 부정확하게 느껴집니다.
-     - **먼저 할 A/B**: `Samples~/BasicUsage/HomeView.uxml`의 `<jui:UIScrollView>`를
-       `<ui:ScrollView>`로(닫는 태그 포함) 바꿔 재Import 후 트랙 클릭 비교. 동일하면 UI Toolkit
-       기본 동작이므로 우리 버그가 아니고, 기본 ScrollView만 정확하면 우리 문제입니다.
-     - **우리 버그가 아닐 때의 선택지**: ① `vertical-page-size` 상향(이동량만 커지고 여전히 점프는
-       아님) ② 점프-투-포지션 구현 — 트랙 클릭 지점의 비율로 `scrollOffset`을 직접 설정.
-       `ScrollDragManipulator`가 이미 스크롤바 영역을 판별(`IsWithinScrollers`)하므로 붙일 자리는
-       있고, dragger 위 클릭을 제외하는 조건만 추가하면 됩니다.
+     - Unity 6000.0 공식 Slider 문서상 `page-size > 0`이면 트랙 클릭 시 포인터 방향으로 정해진
+       페이지 양만 이동하고, `page-size = 0`일 때 포인터 위치로 바로 이동합니다. Unity 6000.5
+       UXML 스키마에서 `ScrollView.vertical-page-size` 기본값은 `-1`(자동 페이지 크기)입니다.
+     - Sample의 `UIScrollView`에 `vertical-page-size="0"`을 지정해 사용자 기대대로 클릭 위치로
+       바로 이동하게 했습니다. `UIScrollView` 자체의 기본값은 Unity `ScrollView` 계약을 보존합니다.
    - **드래그 중 프레임 드랍 — 에디터 한정으로 확정**(2026-08-18). 사용자가 Statistics로 프레임
      드랍을 확인했으나, **Development Build에서 측정한 결과 실제 프레임 드랍이 없었습니다.**
      Profiler에서도 UI Toolkit `UpdatePanels`/`RenderPanels`가 각각 0.14ms/0.08ms로 예산(16.6ms)
@@ -284,6 +281,14 @@
         있어, 스크롤처럼 잦은 레이아웃 갱신에서 매번 전체 재작성이 일어납니다. **폭과 아이템 수가
         같으면 건너뛰는 캐시**를 넣었습니다. 대신 `ColumnCount` 등 `[UxmlAttribute]` 속성 setter는
         캐시를 무효화하고 즉시 다시 배치해, UI Builder에서 값을 바꿨을 때 바로 반영됩니다.
+     - **Development Player 정량 A/B 추가 확인**(2026-08-19, macOS, 1280x720, 동일 Sample):
+       무조작 481프레임과 ScrollView 상하 드래그 465프레임(시작·종료 각 10% 제외)을 raw Profiler로
+       비교했습니다. 평균 프레임은 33.418ms → 33.332ms, P95는 33.558ms → 33.741ms,
+       P99는 53.635ms → 34.206ms로 프레임 저하는 재현되지 않았습니다. 조작 비용 증가는
+       `UIElementsUpdatePanels` +0.051ms/frame, `UIElements.UpdateLayout` +0.0019ms/frame,
+       `UIElementsRepaintPanels` +0.0061ms/frame, GC Alloc 약 +63B/frame이었습니다. 입력 처리 비용은
+       측정 가능하지만 현재 Sample에서는 프레임 예산을 흔드는 병목이 아닙니다. 이 결과는 macOS
+       데스크톱 1회 측정이며, 아래 저사양 실제 기기·다수 항목·장시간 GC 검증을 대체하지 않습니다.
    - **관련 Sample 레이아웃 결함**(2026-08-18, 사용자 제보 "Device Simulator는 정상인데 Game
      View에서 UICarousel이 깨진다"): `.carousel-host`가 `height: 150px`만 있고 `flex-shrink`가
      기본값 1이라, 화면이 짧으면 부모 flex가 이 영역을 눌러 높이가 0에 가까워집니다. `UICarousel`은

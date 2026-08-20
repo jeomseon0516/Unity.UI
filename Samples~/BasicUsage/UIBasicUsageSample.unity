@@ -213,10 +213,34 @@ MonoBehaviour:
   channel: {fileID: 11400000, guid: 10000000000000000000000000000009, type: 2}
   screenOpened:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1005}
+        m_TargetAssemblyTypeName: Jeomseon.Samples.UI.UIBasicUsageSample, Jeomseon.Unity.UI.Samples.BasicUsage
+        m_MethodName: OnScreenOpenedFromInspector
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
   screenClosed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1005}
+        m_TargetAssemblyTypeName: Jeomseon.Samples.UI.UIBasicUsageSample, Jeomseon.Unity.UI.Samples.BasicUsage
+        m_MethodName: OnScreenClosedFromInspector
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
   allScreensClosed:
     m_PersistentCalls:
       m_Calls: []

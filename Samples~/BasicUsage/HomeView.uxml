@@ -12,7 +12,7 @@
             <ui:Button name="loading-button" text="Open System Toast" />
         </ui:VisualElement>
         <ui:Label text="Responsive UIGrid" class="section-title" />
-        <jui:UIScrollView name="grid-scroll" class="grid-scroll">
+        <jui:UIScrollView name="grid-scroll" class="grid-scroll" vertical-page-size="0">
             <ui:VisualElement name="grid-host" class="grid-host" />
         </jui:UIScrollView>
     </sample:HomeView>
