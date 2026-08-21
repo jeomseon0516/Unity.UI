@@ -2,6 +2,24 @@
 
 ## [Unreleased]
 
+- **(Breaking)** `UIStackManager.Initialize(UIChannel)`를 제거하고 책임을 둘로 나눴습니다.
+  `SetChannel(UIChannel)`은 Catalog와 이미 만들어진 View를 유지한 채 통신 Channel만 교체하고,
+  `RebuildCatalog()`는 Channel 구독을 건드리지 않고 Catalog만 다시 구축합니다. 마이그레이션:
+  기존 `Initialize(channel)` 호출은 `SetChannel(channel)` 다음 `RebuildCatalog()`로 바꿉니다.
+- **(Breaking)** `UIChannel`에서 정적 UI 목록을 분리해 `UICatalog : ScriptableObject`로 옮겼습니다.
+  `UIChannel`은 Open/Close 요청과 Notification 통신만 담당합니다. 마이그레이션: `UICatalog` 에셋을
+  만들어 기존 `UIChannel.entries` 항목을 옮기고 `UIStackManager.catalog`에 지정합니다.
+- **(Breaking)** `UIView.Channel`의 타입이 `UIChannel`에서 `IUIRequester`로 바뀌었습니다. View는
+  열기·닫기 요청만 보내고 `ScreenOpened` 같은 Notification은 구독할 수 없습니다. View끼리 서로의
+  상태를 감지하는 암묵적 결합을 막기 위한 접근 범위 제한입니다(ADR-0008).
+- `UIStackManager`를 조합 루트로 축소했습니다. Layer별 Stack·등록 상태는 순수 C# `UIStackController`가,
+  UXML Layout에서 View를 만드는 일은 `UIViewFactory`가 담당합니다. Manager에는 Layer 컨테이너 생성과
+  Channel 구독 중계만 남습니다.
+- `Dictionary<Type, UIView> _uiPool`을 `_screenRegistry`로 개명했습니다. 실제 Object Pool이 아니므로
+  나중에 진짜 Pooling을 추가할 때 용어가 충돌하지 않게 합니다.
+- Scene·UIDocument 없이 Stack 전이를 검증하는 `UIStackControllerTests` 9개를 추가했습니다.
+  Unity 6000.5.7f1 PlayMode 결과는 15/15입니다.
+
 - `Samples~/BasicUsage`의 `UIChannelListener`에 `screenOpened`/`screenClosed`
   `UnityEvent<UIView>` Dynamic listener 예시를 실제로 직렬화했습니다. Sample Console 로그에서
   전달된 런타임 `UIView`의 구체 타입을 확인할 수 있습니다.

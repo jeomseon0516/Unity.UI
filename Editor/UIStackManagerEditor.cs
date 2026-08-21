@@ -55,7 +55,10 @@ namespace Jeomseon.Unity.UI.Editor
             if (!document || document.rootVisualElement == null) return;
 
             var channel = serializedObject.FindProperty("channel").objectReferenceValue as UIChannel;
-            _manager.Initialize(channel);
+            // Channel 교체와 Catalog 재구축은 별개 책임이므로 순서대로 호출합니다. 새로 만들 View가
+            // 올바른 Channel을 받도록 Channel을 먼저 설정합니다.
+            _manager.SetChannel(channel);
+            _manager.RebuildCatalog();
             ShowFirstScreen(document);
             InternalEditorUtility.RepaintAllViews();
         }

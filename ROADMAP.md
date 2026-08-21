@@ -319,7 +319,36 @@
 7. **P3-01 — Navigation·Transition 확장**
    - 화면 전환, history, modal, animation은 Core 관리자와 분리된 선택 계층으로 설계합니다.
 
-## 예정 — UIStackManager/UIChannel 구조 재설계 (2026-08-20 지시, 착수 전)
+## 완료 — UIStackManager/UIChannel 구조 재설계 (2026-08-21)
+
+작업 순서 지시대로 진행해 다음을 완료했습니다.
+
+| 스펙 항목 | 결과 |
+| --- | --- |
+| `UIChannel`에서 `UICatalog` 분리 | 완료 |
+| Lifecycle 정리 (`Awake`=구성 / `OnEnable`=구독 / `OnDisable`=해제) | 완료 |
+| `Initialize()` 대신 `SetChannel()` + `RebuildCatalog()` 분리 | 완료 |
+| `_uiPool` → `_screenRegistry` 개명 | 완료 |
+| `UIViewFactory` 분리 | 완료 |
+| `UIStackController` 분리 (순수 C#) | 완료 |
+| `IUIRequester` 도입 | 완료 |
+| `IUIEventSource` 도입 | **하지 않음** (아래 판단 참고) |
+| 테스트 보강 | `UIStackControllerTests` 9개 추가, PlayMode 15/15 |
+
+**`IUIRequester`를 도입한 근거**: `UIView.Channel`이 `UIChannel` 전체였을 때 파생 View가
+`ScreenOpened` 같은 Notification까지 구독할 수 있었고, 이는 View가 다른 View의 상태를 감지하는
+암묵적 결합 경로였습니다. 인터페이스 비용은 메서드 3개뿐이고 기존 Sample 코드
+(`Channel.RequestOpen<PopupView>`)는 그대로 동작합니다. 구현 교체가 목적이 아니라 **접근 범위
+제한**이 목적이므로 "구현체가 하나뿐이면 인터페이스를 만들지 않는다"는 원칙과 충돌하지 않습니다.
+
+**`IUIEventSource`를 도입하지 않은 근거**: Notification 구독자는 게임 코드이고 이들은 `UIChannel`
+에셋을 Inspector에서 직접 참조합니다. 인터페이스로 감싸도 참조 타입이 구체 에셋이라 얻는 것이
+없어 클래스 수만 늘어납니다.
+
+**남은 항목**: 아키텍처 문서화(클래스별 책임·의존 관계)와 Sample의 `UICatalog.asset` 생성 및 Scene
+연결입니다. Sample은 `UIChannel.asset`에서 `entries`가 빠져 현재 화면이 등록되지 않습니다.
+
+### 원본 지시 스펙 (2026-08-20)
 
 사용자가 2026-08-20에 상세 스펙을 전달했습니다. **GridTileSystem 작업을 완료한 뒤** 이 패키지로
 돌아와 검토·착수합니다. ADR-0008의 핵심 원칙(`UIView`와 `UIStackManager`가 서로 직접 참조하지
