@@ -19,6 +19,9 @@
   나중에 진짜 Pooling을 추가할 때 용어가 충돌하지 않게 합니다.
 - Scene·UIDocument 없이 Stack 전이를 검증하는 `UIStackControllerTests` 9개를 추가했습니다.
   Unity 6000.5.7f1 PlayMode 결과는 15/15입니다.
+- `Basic Usage` Sample에 `UICatalog.asset`을 추가하고 Scene의 `UIStackManager`에 연결했습니다.
+  `UIChannel.asset`에 남아 있던 화면 목록은 제거했습니다. Unity에서 Catalog 항목 3개와 Scene 참조가
+  실제로 해석되는 것을 확인했습니다.
 
 - `Samples~/BasicUsage`의 `UIChannelListener`에 `screenOpened`/`screenClosed`
   `UnityEvent<UIView>` Dynamic listener 예시를 실제로 직렬화했습니다. Sample Console 로그에서

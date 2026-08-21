@@ -345,8 +345,11 @@
 에셋을 Inspector에서 직접 참조합니다. 인터페이스로 감싸도 참조 타입이 구체 에셋이라 얻는 것이
 없어 클래스 수만 늘어납니다.
 
-**남은 항목**: 아키텍처 문서화(클래스별 책임·의존 관계)와 Sample의 `UICatalog.asset` 생성 및 Scene
-연결입니다. Sample은 `UIChannel.asset`에서 `entries`가 빠져 현재 화면이 등록되지 않습니다.
+Sample도 복구했습니다. `UICatalog.asset`을 추가하고 Scene의 `UIStackManager.catalog`에 연결했으며,
+`UIChannel.asset`에 남아 있던 화면 목록은 제거했습니다. Catalog 항목 3개(Screen=HomeView,
+Popup=PopupView, System=LoadingView)와 Scene 참조가 Unity에서 실제로 해석되는 것을 확인했습니다.
+
+**남은 항목**: 아키텍처 문서화(클래스별 책임·의존 관계)입니다.
 
 ### 원본 지시 스펙 (2026-08-20)
 

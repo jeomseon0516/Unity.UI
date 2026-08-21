@@ -184,6 +184,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Jeomseon.Unity.UI::Jeomseon.Unity.UI.UIStackManager
   document: {fileID: 1002}
+  catalog: {fileID: 11400000, guid: c23fb02ef217434098710a36cd46692c, type: 2}
   channel: {fileID: 11400000, guid: 10000000000000000000000000000009, type: 2}
 --- !u!114 &1005
 MonoBehaviour:
