@@ -349,7 +349,9 @@ Sample도 복구했습니다. `UICatalog.asset`을 추가하고 Scene의 `UIStac
 `UIChannel.asset`에 남아 있던 화면 목록은 제거했습니다. Catalog 항목 3개(Screen=HomeView,
 Popup=PopupView, System=LoadingView)와 Scene 참조가 Unity에서 실제로 해석되는 것을 확인했습니다.
 
-**남은 항목**: 아키텍처 문서화(클래스별 책임·의존 관계)입니다.
+아키텍처 문서화까지 마쳐 이 재설계 작업은 완료입니다. 클래스별 책임, 의존 규칙, 수명, 개선점,
+확장 지점과 도입하지 않은 항목의 근거는 하네스의 `architecture/ui-stack-architecture.md`에
+기록했습니다.
 
 ### 원본 지시 스펙 (2026-08-20)
 
