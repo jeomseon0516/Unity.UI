@@ -103,8 +103,7 @@
        dependencies와 Runtime/Editor asmdef 참조에서 제거했습니다. 사용처가 없고 UI Toolkit의
        `GeometryChangedEvent`로 대체되는 `ResolutionObserver`도 제거해 `Jeomseon.Unity.Singleton`
        의존성까지 제거했습니다. `validate-package.sh`/`git diff --check` 통과.
-     - **드래그 물리(탄성 계수, 스냅 속도) 수치는 실제 조작감을 보지 못한 상태로 정한 초기값이라,
-       Unity에서 만져보면 조정이 필요할 가능성이 높습니다.**
+      - **드래그 물리(탄성 계수, 스냅 속도) 수치는 2026-08-18 시점엔 실측 전 초기값으로 재조정이 필요할 것으로 봤으나, 2026-09-01 사용자 실측으로 조작감이 확인돼 안정화된 값으로 유지합니다. (탄성 비활성화/하드 클램프 같은 추가 옵션은 P3-01에서 별도 검토.)**
    - `Samples~/BasicUsage`를 새 `UIStackManager`/`UIView` 기준으로 다시 작성했습니다(2026-08-18).
      `UIDocument`/`PanelSettings`/`UIChannel`, `HomeView(Screen)`/`PopupView(Popup)`를 실제 Scene에
      직렬화했으며 backdrop 입력 차단, `UICarousel`, `UIGrid`를 한 Scene에서 확인할 수 있습니다.
@@ -218,9 +217,8 @@
      경로에 의존하지 않지만, 실제 단말에서 기본 ScrollView 동작과 본 확장이 **중복 적용되지
      않는지**는 확인이 필요합니다.
    - Sample `HomeView.uxml`의 Grid 영역을 `UIScrollView`로 교체해 검증할 수 있습니다.
-   - **드래그 물리 기본값은 튜닝 대기 상태입니다**(2026-08-18). 아래 값들은 **실제 조작감을 보지
-     못한 채 정한 초기값**이므로 Unity에서 만져본 뒤 조정이 필요할 가능성이 높습니다. 같은 사유로
-     `UICarousel`의 `Elasticity`/`SnapSpeed`도 함께 재검토 대상입니다.
+    - **드래그 물리 기본값은 2026-08-18 시점의 해당 우려가 2026-09-01 사용자 실측으로 해소됐습니다. 드래그 물리 기본값과 조작감이 2026-09-01 확인됐으며, P2-03 안정화 완료 시점부터 현재 기본값을 유지합니다.** 아래 값들은 Unity에서 만져본 뒤 조정이 필요할 가능성이 높습니다. 같은 사유로
+      `UICarousel`의 `Elasticity`/`SnapSpeed`도 함께 재검토 대상입니다.
 
      | 속성 | 현재 기본값 | 참고(uGUI `ScrollRect`) |
      | --- | --- | --- |
@@ -230,7 +228,7 @@
      | `DragThreshold` | `10` | EventSystem Drag Threshold `10` (동일) |
 
      `DragDecelerationRate`와 `DragThreshold`는 uGUI 기본값에 맞춰 두었으므로 그대로 두어도
-     무방하고, 실제 조정이 필요할 가능성이 큰 것은 `DragElasticity`와 `DragSpringSpeed`입니다.
+     무방하고, DragElasticity와 DragSpringSpeed는 2026-09-01 사용자 실측으로 현재 기본값 조작감이 확인돼 안정화된 값으로 유지합니다.
    - **물리는 축별로 독립 계산해야 합니다**(2026-08-18, 사용자 제보 "Vertical과 Horizontal이 함께
      적용되면 관성이 안 먹는다"). 초기 구현은 `overshoot.sqrMagnitude`/`velocity.sqrMagnitude`로
      **두 축을 합쳐** 분기해서, 한 축만 경계를 벗어나도 스프링백 분기를 타며

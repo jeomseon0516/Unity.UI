@@ -3,8 +3,8 @@
   "version": "0.5.0",
   "displayName": "Jeomseon Unity UI",
   "description": "UI Toolkit based screen stack manager and reusable VisualElement controls.",
-  "unity": "6000.5",
-  "unityRelease": "7f1",
+  "unity": "6000.6",
+  "unityRelease": "0f1",
   "dependencies": {},
   "author": {
     "name": "jeomseon0516",
