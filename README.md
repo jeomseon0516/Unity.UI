@@ -2,7 +2,30 @@
 
 UI Toolkit(`UIDocument`/`VisualElement`) 기반 화면 스택 매니저와 재사용 컨트롤.
 
-## 설치
+## OpenUPM으로 설치
+
+프로젝트의 `Packages/manifest.json`에 OpenUPM scoped registry를 한 번 등록합니다.
+
+```json
+{
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.jeomseon"
+      ]
+    }
+  ],
+  "dependencies": {
+    "com.jeomseon.unity.ui": "0.7.0"
+  }
+}
+```
+
+## Git URL로 설치
+
+Unity Package Manager의 `Install package from git URL`에 다음 주소를 사용합니다.
 
 ```text
 https://github.com/jeomseon0516/Unity.UI.git#v0.7.0
