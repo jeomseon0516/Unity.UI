@@ -1,6 +1,6 @@
 # 변경 기록
 
-## [Unreleased]
+## [0.6.0] - 2026-09-03
 
 - **(Breaking)** `UIStackManager.Initialize(UIChannel)`를 제거하고 책임을 둘로 나눴습니다.
   `SetChannel(UIChannel)`은 Catalog와 이미 만들어진 View를 유지한 채 통신 Channel만 교체하고,
