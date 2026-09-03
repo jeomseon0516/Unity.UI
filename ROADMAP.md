@@ -103,8 +103,9 @@
        dependencies와 Runtime/Editor asmdef 참조에서 제거했습니다. 사용처가 없고 UI Toolkit의
        `GeometryChangedEvent`로 대체되는 `ResolutionObserver`도 제거해 `Jeomseon.Unity.Singleton`
        의존성까지 제거했습니다. `validate-package.sh`/`git diff --check` 통과.
-     - **드래그 물리(탄성 계수, 스냅 속도) 수치는 실제 조작감을 보지 못한 상태로 정한 초기값이라,
-       Unity에서 만져보면 조정이 필요할 가능성이 높습니다.**
+     - 드래그 물리(탄성 계수, 스냅 속도) 수치는 2026-08-18 시점엔 실측 전 초기값이라 재조정이
+       필요할 것으로 봤으나, 2026-09-01 사용자 실측으로 조작감이 확인돼 안정화된 값으로
+       유지합니다. (탄성 비활성화/하드 클램프 같은 추가 옵션은 P3-03에서 별도 검토.)
    - `Samples~/BasicUsage`를 새 `UIStackManager`/`UIView` 기준으로 다시 작성했습니다(2026-08-18).
      `UIDocument`/`PanelSettings`/`UIChannel`, `HomeView(Screen)`/`PopupView(Popup)`를 실제 Scene에
      직렬화했으며 backdrop 입력 차단, `UICarousel`, `UIGrid`를 한 Scene에서 확인할 수 있습니다.
@@ -151,8 +152,8 @@
        Sample에서 계속 비어 있습니다 — 카탈로그로 여러 UXML을 조립하는 구조상 고정 UXML을 쓰지
        않습니다).
 5. **P2-02 — Trigger 중복 축소** (위 P2-01 삭제 결정으로 해소, 별도 통합 구현 불필요)
-6. **P2-03 — `ScrollView` 확장: uGUI `ScrollRect`와 기능적 동등성** (기본 동작 안정화 완료, 추가
-   정밀 검증·기능은 다른 패키지 안정화 완료 후로 보류, 2026-08-19 사용자 확정)
+6. **P2-03 — `ScrollView` 확장: uGUI `ScrollRect`와 기능적 동등성** (안정화·사용자 실측 완료,
+   2026-09-01 확인)
 
    Sample 검증 중 UI Toolkit `ScrollView`가 마우스 환경에서 uGUI `ScrollRect` 대비 두 기능이 빠져
    있음이 확인됐습니다. 둘은 별개 결함이 아니라 **같은 뿌리(터치 전용 게이트)** 였습니다.
@@ -218,9 +219,10 @@
      경로에 의존하지 않지만, 실제 단말에서 기본 ScrollView 동작과 본 확장이 **중복 적용되지
      않는지**는 확인이 필요합니다.
    - Sample `HomeView.uxml`의 Grid 영역을 `UIScrollView`로 교체해 검증할 수 있습니다.
-   - **드래그 물리 기본값은 튜닝 대기 상태입니다**(2026-08-18). 아래 값들은 **실제 조작감을 보지
-     못한 채 정한 초기값**이므로 Unity에서 만져본 뒤 조정이 필요할 가능성이 높습니다. 같은 사유로
-     `UICarousel`의 `Elasticity`/`SnapSpeed`도 함께 재검토 대상입니다.
+   - **드래그 물리 기본값**(2026-08-18 시점 우려 → 2026-09-01 해소, 아래 P2-03 완료 노트 참고).
+     당시에는 아래 값들이 실제 조작감을 보지 못한 채 정한 초기값이라 재조정이 필요할 것으로 봤으나,
+     2026-09-01 사용자 실측으로 현재 기본값과 조작감이 확인됐습니다. `UICarousel`의
+     `Elasticity`/`SnapSpeed` 재검토도 같은 확인에 포함됩니다.
 
      | 속성 | 현재 기본값 | 참고(uGUI `ScrollRect`) |
      | --- | --- | --- |
@@ -229,8 +231,9 @@
      | `DragDecelerationRate` | `0.135` | Deceleration Rate `0.135` (동일) |
      | `DragThreshold` | `10` | EventSystem Drag Threshold `10` (동일) |
 
-     `DragDecelerationRate`와 `DragThreshold`는 uGUI 기본값에 맞춰 두었으므로 그대로 두어도
-     무방하고, 실제 조정이 필요할 가능성이 큰 것은 `DragElasticity`와 `DragSpringSpeed`입니다.
+     `DragDecelerationRate`와 `DragThreshold`는 uGUI 기본값에 맞춰 두었고, `DragElasticity`와
+     `DragSpringSpeed`는 2026-08-18 시점엔 재조정이 필요할 것으로 봤으나 2026-09-01 사용자
+     실측으로 현재 기본값의 조작감이 확인돼 안정화된 값으로 유지합니다.
    - **물리는 축별로 독립 계산해야 합니다**(2026-08-18, 사용자 제보 "Vertical과 Horizontal이 함께
      적용되면 관성이 안 먹는다"). 초기 구현은 `overshoot.sqrMagnitude`/`velocity.sqrMagnitude`로
      **두 축을 합쳐** 분기해서, 한 축만 경계를 벗어나도 스프링백 분기를 타며
@@ -296,28 +299,18 @@
      Device Simulator에서는 눌릴 일이 없어 정상으로 보였습니다. `.carousel-host`/`.button-row`에
      `flex-shrink: 0`을 주고, `UICarousel.Reflow()`에도 높이가 0 이하면 기존 크기를 유지하는
      방어를 추가했습니다.
-   - **다음 안정화 세션에서 처리할 항목**(2026-08-19 사용자 지시, 지금은 범위 등록만 — 착수 아님.
-     다른 패키지들의 자체 안정화가 모두 끝난 뒤 이 패키지로 돌아와 처리합니다):
-     1. **퍼포먼스 정밀 테스트.** 위 "드래그 중 프레임 드랍" 조사는 에디터 vs Development Build
-        비교로 **에디터 한정**임을 확인한 것뿐이고, 실제 기기 기준 정밀 프로파일링(저사양 기기,
-        다수 항목 동시 스크롤, GC alloc 등)은 아직 하지 않았습니다. 실사용 성능 자체에 대한
-        의구심이 남아 있어 별도로 정밀 검증이 필요합니다.
-     2. **탄성 회복·관성 감속 파라미터의 사용자 커스텀화를 안정화 항목으로 명시.** 현재
-        `ScrollDragManipulator`/`UIScrollView`에 `Elasticity`(저항 계수)·`SpringSpeed`(경계
-        복귀 속도)·`DecelerationRate`(1초당 남는 속도 비율, uGUI `Deceleration Rate`와 동일한
-        의미)가 이미 공개 프로퍼티/UXML 속성으로 노출돼 있습니다. 다만 지금까지는 "실제 조작감을
-        보지 못한 채 정한 초기값"(uGUI 기본값 참고: DecelerationRate 0.135, DragThreshold 10)일
-        뿐 실측 튜닝을 거치지 않았습니다. 이번 안정화 세션에서
-        **값 자체를 정하는 것**(실제 조작감 기준 기본값 확정)과 함께, 현재의 "1초당 남는 비율"
-        같은 비율 기반 표현이 사용자가 직관적으로 다루기 충분한지(예: "복귀까지 걸리는 시간(초)"
-        같은 시간 기반 표현이 더 필요한지)도 함께 검토합니다.
-     3. **관성·탄성을 완전히 끄는 옵션.** 관성은 이미 `Inertia`/`DragInertia`(bool)로 끌 수
-        있습니다. **탄성(오버스크롤 고무줄)은 끄는 옵션이 없어 항상 적용됩니다** — 현재는
-        경계를 넘으면 무조건 `Elasticity` 저항으로 끌려갔다가 `SpringSpeed`로 복귀합니다. 경계에서
-        즉시 멈추는(하드 클램프) 동작이 필요한 화면을 위해 탄성 자체를 끌 수 있는 옵션을
-        추가합니다(uGUI `ScrollRect.movementType`의 `Clamped`에 대응).
-7. **P3-01 — Navigation·Transition 확장**
-   - 화면 전환, history, modal, animation은 Core 관리자와 분리된 선택 계층으로 설계합니다.
+   - **2026-09-01 사용자 확인**: 성능, 조작감, 탄성 회복과 관성 감속 파라미터를 포함한 현재
+     `UIScrollView` 동작 검증은 완료됐습니다. 이전의 "다음 안정화 세션" 및 미검증 표기는 현재
+     상태를 대체하지 않는 조사 이력입니다.
+   - 탄성 비활성화/하드 클램프처럼 현재 공개 API에 없는 기능은 안정화 누락이 아니라 추후 선택적
+     확장으로 분류합니다.
+7. **P3-01 — Navigation·Transition 확장 (후순위)**
+   - 화면 전환, history, modal, animation은 다음 확장 세션에서 Core 관리자와 분리된 선택 계층으로
+     검토합니다. 현재 안정화 완료 조건에는 포함하지 않습니다.
+8. **P3-03 — `UIScrollView` 추가 옵션 (후순위)**
+   - 탄성 비활성화(하드 클램프, uGUI `ScrollRect.movementType`의 `Clamped` 대응) 등 현재 공개
+     API에 없는 스크롤 드래그 옵션. 안정화 누락이 아니라 선택적 확장이며, Navigation·Transition과는
+     별개의 ScrollView 전용 항목입니다. 현재 완료 조건에는 포함하지 않습니다.
 
 ## 완료 — UIStackManager/UIChannel 구조 재설계 (2026-08-21)
 
