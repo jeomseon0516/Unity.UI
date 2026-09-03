@@ -230,8 +230,9 @@
      | `DragDecelerationRate` | `0.135` | Deceleration Rate `0.135` (동일) |
      | `DragThreshold` | `10` | EventSystem Drag Threshold `10` (동일) |
 
-     `DragDecelerationRate`와 `DragThreshold`는 uGUI 기본값에 맞춰 두었으므로 그대로 두어도
-     무방하고, 실제 조정이 필요할 가능성이 큰 것은 `DragElasticity`와 `DragSpringSpeed`입니다.
+     `DragDecelerationRate`와 `DragThreshold`는 uGUI 기본값에 맞춰 두었고, `DragElasticity`와
+     `DragSpringSpeed`는 2026-08-18 시점엔 재조정이 필요할 것으로 봤으나 2026-09-01 사용자
+     실측으로 현재 기본값의 조작감이 확인돼 안정화된 값으로 유지합니다.
    - **물리는 축별로 독립 계산해야 합니다**(2026-08-18, 사용자 제보 "Vertical과 Horizontal이 함께
      적용되면 관성이 안 먹는다"). 초기 구현은 `overshoot.sqrMagnitude`/`velocity.sqrMagnitude`로
      **두 축을 합쳐** 분기해서, 한 축만 경계를 벗어나도 스프링백 분기를 타며
