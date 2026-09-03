@@ -103,8 +103,9 @@
        dependencies와 Runtime/Editor asmdef 참조에서 제거했습니다. 사용처가 없고 UI Toolkit의
        `GeometryChangedEvent`로 대체되는 `ResolutionObserver`도 제거해 `Jeomseon.Unity.Singleton`
        의존성까지 제거했습니다. `validate-package.sh`/`git diff --check` 통과.
-     - **드래그 물리(탄성 계수, 스냅 속도) 수치는 실제 조작감을 보지 못한 상태로 정한 초기값이라,
-       Unity에서 만져보면 조정이 필요할 가능성이 높습니다.**
+     - 드래그 물리(탄성 계수, 스냅 속도) 수치는 2026-08-18 시점엔 실측 전 초기값이라 재조정이
+       필요할 것으로 봤으나, 2026-09-01 사용자 실측으로 조작감이 확인돼 안정화된 값으로
+       유지합니다. (탄성 비활성화/하드 클램프 같은 추가 옵션은 P3-01에서 별도 검토.)
    - `Samples~/BasicUsage`를 새 `UIStackManager`/`UIView` 기준으로 다시 작성했습니다(2026-08-18).
      `UIDocument`/`PanelSettings`/`UIChannel`, `HomeView(Screen)`/`PopupView(Popup)`를 실제 Scene에
      직렬화했으며 backdrop 입력 차단, `UICarousel`, `UIGrid`를 한 Scene에서 확인할 수 있습니다.
