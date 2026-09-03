@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:sample="Jeomseon.Samples.UI">
+    <Style src="NavigationTransitionSample.uss" />
+    <sample:MenuScreen class="screen screen--menu">
+        <ui:Label text="Menu" class="screen__title" />
+        <ui:Label text="Push는 스택 위에 쌓입니다. Slide-in으로 들어옵니다." class="screen__hint" />
+        <ui:VisualElement class="screen__buttons">
+            <ui:Button name="to-detail" text="Open Detail" />
+            <ui:Button name="to-settings" text="Open Settings" />
+        </ui:VisualElement>
+    </sample:MenuScreen>
+</ui:UXML>

@@ -1,0 +1,7 @@
+{
+  "name": "Jeomseon.Unity.UI.Samples.NavigationTransition",
+  "rootNamespace": "Jeomseon.Samples.UI",
+  "references": [
+    "Jeomseon.Unity.UI"
+  ]
+}

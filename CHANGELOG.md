@@ -18,6 +18,9 @@
   - 두 계층은 서로 독립이며 의존 방향(Core는 둘을 참조 안 함)을 reflection 테스트로 고정했습니다.
 - 테스트: `NavigationStackTests`(순수 C#, history 전이·채널 구동·델리게이트), `LayeringRuleTests`
   (네임스페이스 참조 규칙).
+- Sample `Navigation Transition Usage` 추가 — `NavigationStack`(history/back)과 `ScreenTransitions`
+  (slide enter/exit)를 함께 쓰는 3화면(Menu/Detail/Settings) Scene. `Editor/` 폴더의
+  `NavigationTransitionSampleBuilder`(`Jeomseon/Tool/UI` 메뉴)로 Scene을 재생성할 수 있습니다.
 
 ## [0.6.0] - 2026-09-03
 

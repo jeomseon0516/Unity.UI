@@ -1,0 +1,10 @@
+{
+  "name": "Jeomseon.Unity.UI.Samples.NavigationTransition.Editor",
+  "rootNamespace": "Jeomseon.Samples.UI.Editor",
+  "references": [
+    "Jeomseon.Unity.UI",
+    "Jeomseon.Unity.UI.Samples.NavigationTransition"
+  ],
+  "includePlatforms": [ "Editor" ],
+  "autoReferenced": false
+}

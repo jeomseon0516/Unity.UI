@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:sample="Jeomseon.Samples.UI">
+    <Style src="NavigationTransitionSample.uss" />
+    <sample:SettingsScreen class="screen screen--settings">
+        <ui:Label text="Settings" class="screen__title" />
+        <ui:Label text="PopTo&lt;MenuScreen&gt;는 위 스택을 모두 닫고 Menu로 돌아갑니다." class="screen__hint" />
+        <ui:VisualElement class="screen__buttons">
+            <ui:Button name="to-menu" text="Pop to Menu" />
+            <ui:Button name="back" text="Back" />
+        </ui:VisualElement>
+    </sample:SettingsScreen>
+</ui:UXML>

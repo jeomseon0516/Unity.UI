@@ -25,6 +25,11 @@
       "displayName": "Basic Usage",
       "description": "패키지 핵심 API를 확인하는 최소 사용 예제입니다.",
       "path": "Samples~/BasicUsage"
+    },
+    {
+      "displayName": "Navigation Transition Usage",
+      "description": "NavigationStack(history/back)과 ScreenTransitions(slide enter/exit)를 함께 쓰는 3화면 Scene 예제입니다.",
+      "path": "Samples~/NavigationTransitionUsage"
     }
   ]
 }

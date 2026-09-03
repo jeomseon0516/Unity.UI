@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:sample="Jeomseon.Samples.UI">
+    <Style src="NavigationTransitionSample.uss" />
+    <sample:DetailScreen class="screen screen--detail">
+        <ui:Label text="Detail" class="screen__title" />
+        <ui:Label text="Back(또는 ESC / 게임패드 B)은 왼쪽으로 밀려 나갑니다." class="screen__hint" />
+        <ui:VisualElement class="screen__buttons">
+            <ui:Button name="to-settings" text="Open Settings" />
+            <ui:Button name="back" text="Back" />
+        </ui:VisualElement>
+    </sample:DetailScreen>
+</ui:UXML>
