@@ -304,10 +304,13 @@
      상태를 대체하지 않는 조사 이력입니다.
    - 탄성 비활성화/하드 클램프처럼 현재 공개 API에 없는 기능은 안정화 누락이 아니라 추후 선택적
      확장으로 분류합니다.
-7. **P3-01 — Navigation·Transition 및 선택 확장 (후순위)**
-   - 화면 전환, history, modal, animation과 탄성 비활성화/하드 클램프 같은 추가 기능은 다음 확장
-     세션에서 Core 관리자와 분리된 선택 계층·옵션으로 검토합니다. 현재 안정화 완료 조건에는
-     포함하지 않습니다.
+7. **P3-01 — Navigation·Transition 확장 (후순위)**
+   - 화면 전환, history, modal, animation은 다음 확장 세션에서 Core 관리자와 분리된 선택 계층으로
+     검토합니다. 현재 안정화 완료 조건에는 포함하지 않습니다.
+8. **P3-03 — `UIScrollView` 추가 옵션 (후순위)**
+   - 탄성 비활성화(하드 클램프, uGUI `ScrollRect.movementType`의 `Clamped` 대응) 등 현재 공개
+     API에 없는 스크롤 드래그 옵션. 안정화 누락이 아니라 선택적 확장이며, Navigation·Transition과는
+     별개의 ScrollView 전용 항목입니다. 현재 완료 조건에는 포함하지 않습니다.
 
 ## 완료 — UIStackManager/UIChannel 구조 재설계 (2026-08-21)
 
