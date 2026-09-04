@@ -408,3 +408,13 @@ Popup=PopupView, System=LoadingView)와 Scene 참조가 Unity에서 실제로 �
 
 - `DragAndDropEvent`의 UI Toolkit 재설계 여부(길게 눌러 복제 이미지를 드래그하는 특수 동작). 필요성
   자체가 불확실해 재요청이 있을 때 착수합니다.
+
+### Navigation·Transition 0.7.0 후속 (Kilo PR #3 리뷰 반영)
+
+- `NavigationStack.Back()`/`PopTo`/`ResetTo`의 완전 비동기 직렬화. 현재는 동기 재진입 가드만 있고
+  exit 연출은 분리 실행(로그만). `Awaitable` 반환으로 바꾸는 것은 API 형태 변경이라 다음 major에서.
+- `ValueTween` element별 활성 애니메이션 취소(같은 element에 enter/exit가 겹칠 때). 현재는 각 호출이
+  독립 `AwaitableCompletionSource`라 공유 소스 이중 완료는 없음 — 방어적 하드닝 항목.
+- `ValueTween` 실제 트윈 동작 PlayMode 테스트(살아있는 panel/scheduler 필요, `UIStackControllerTests`
+  하네스 재사용 검토).
+- `NavigationStack`의 `object args` → 타입 있는 `INavigationArgs` 패턴 검토(0.7.0은 최소 표면 유지).

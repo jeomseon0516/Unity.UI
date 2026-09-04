@@ -1,5 +1,27 @@
 # 변경 기록
 
+## [0.7.0] - 2026-09-03
+
+- **Navigation·Transition 하위 계층 추가** (같은 패키지, 단일 asmdef, 네임스페이스로만 분리 —
+  하네스 `ADR-0009`). Core(`UIView`/`UIChannel`/`UIStackManager`) 코드는 변경 없음. 순수 additive.
+  - `Jeomseon.Unity.UI.Transition` — `ITransition`(`PlayEnter`/`PlayExit`, `Awaitable`) + 기본
+    전략 `NoTransition`/`FadeTransition`/`SlideTransition(SlideEdge)`/`ScaleTransition`. UI Toolkit
+    `experimental.animation`으로 float 하나를 트윈합니다. `ScreenTransitions`가 `UIChannel` 알림만
+    구독해 표시 즉시 enter를 재생하고, `CloseAnimated<T>()`로 exit 연출 뒤 실제 `RequestClose`를
+    호출합니다. 평범한 `channel.RequestClose()` 직접 호출은 여전히 즉시 닫힙니다.
+  - `Jeomseon.Unity.UI.Navigation` — 순수 C# `NavigationStack`(`Push<T>`/`Back()`/`PopTo<T>`/
+    `ResetTo<T>`, `Current`/`CurrentArgs`/`Depth`/`CanGoBack`, `Changed` 이벤트). 이동은
+    `UIChannel`을 직접 구동하며 `channel.RequestOpen` 직접 호출은 history에 잡히지 않습니다.
+    `BackNavigationBinder`가 `NavigationCancelEvent`(ESC/게임패드 B/Android back)를 `Back()`에
+    연결합니다(Input System 의존성 없음). exit 연출은 `Func<UIView, Awaitable>` 델리게이트로
+    선택 연결합니다 — Transition 타입을 직접 참조하지 않습니다.
+  - 두 계층은 서로 독립이며 의존 방향(Core는 둘을 참조 안 함)을 reflection 테스트로 고정했습니다.
+- 테스트: `NavigationStackTests`(순수 C#, history 전이·채널 구동·델리게이트), `LayeringRuleTests`
+  (네임스페이스 참조 규칙).
+- Sample `Navigation Transition Usage` 추가 — `NavigationStack`(history/back)과 `ScreenTransitions`
+  (slide enter/exit)를 함께 쓰는 3화면(Menu/Detail/Settings) Scene. `Editor/` 폴더의
+  `NavigationTransitionSampleBuilder`(`Jeomseon/Tool/UI` 메뉴)로 Scene을 재생성할 수 있습니다.
+
 ## [0.6.0] - 2026-09-03
 
 - **(Breaking)** `UIStackManager.Initialize(UIChannel)`를 제거하고 책임을 둘로 나눴습니다.

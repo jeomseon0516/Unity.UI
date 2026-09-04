@@ -1,0 +1,30 @@
+.screen {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    align-items: center;
+    justify-content: center;
+}
+.screen--menu { background-color: rgb(38, 50, 66); }
+.screen--detail { background-color: rgb(46, 66, 54); }
+.screen--settings { background-color: rgb(62, 46, 66); }
+.screen__title {
+    font-size: 44px;
+    color: rgb(240, 240, 240);
+    -unity-font-style: bold;
+    margin-bottom: 8px;
+}
+.screen__hint {
+    font-size: 16px;
+    color: rgb(190, 190, 190);
+    margin-bottom: 24px;
+    white-space: normal;
+    max-width: 420px;
+    -unity-text-align: middle-center;
+}
+.screen__buttons { flex-direction: row; }
+.screen__buttons > Button {
+    min-width: 140px;
+    height: 40px;
+    margin: 6px;
+    font-size: 16px;
+}
