@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 
 namespace Jeomseon.Unity.UI.Tests
@@ -98,5 +101,54 @@ namespace Jeomseon.Unity.UI.Tests
             Assert.That(TypesInNamespace(Transition).Any(), Is.True, "Transition 네임스페이스에 타입이 없습니다.");
             Assert.That(TypesInNamespace(Navigation).Any(), Is.True, "Navigation 네임스페이스에 타입이 없습니다.");
         }
+
+        // --- 소스 레벨 검사 -------------------------------------------------
+        // reflection은 시그니처(필드·프로퍼티·파라미터·반환·베이스·인터페이스)만 본다. 메서드 본문에서만
+        // 쓰이는 `using Jeomseon.Unity.UI.Transition;` 같은 파일 단위 using은 못 잡으므로, 하위 계층
+        // 소스 파일을 직접 읽어 반대편 네임스페이스 using을 금지한다.
+
+        [Test]
+        public void NavigationSource_HasNoUsingOfTransition()
+            => AssertNoCrossLayerUsing("Navigation", "Transition");
+
+        [Test]
+        public void TransitionSource_HasNoUsingOfNavigation()
+            => AssertNoCrossLayerUsing("Transition", "Navigation");
+
+        private static void AssertNoCrossLayerUsing(string fromFolder, string forbiddenLeaf)
+        {
+            string runtimeDir = Path.GetFullPath(Path.Combine(TestSourceDirectory(), "..", "..", "Runtime", fromFolder));
+            if (!Directory.Exists(runtimeDir))
+            {
+                Assert.Inconclusive($"소스 폴더를 찾지 못했습니다: {runtimeDir}");
+                return;
+            }
+
+            var usingPattern = new Regex($@"^\s*using\s+Jeomseon\.Unity\.UI\.{Regex.Escape(forbiddenLeaf)}\s*;", RegexOptions.Multiline);
+            var qualifiedPattern = new Regex($@"\bJeomseon\.Unity\.UI\.{Regex.Escape(forbiddenLeaf)}\.");
+
+            var violations = new List<string>();
+            foreach (string file in Directory.GetFiles(runtimeDir, "*.cs", SearchOption.AllDirectories))
+            {
+                string source = StripComments(File.ReadAllText(file));
+                if (usingPattern.IsMatch(source) || qualifiedPattern.IsMatch(source))
+                    violations.Add(Path.GetFileName(file));
+            }
+
+            Assert.That(violations, Is.Empty,
+                $"Runtime/{fromFolder}/*.cs가 'Jeomseon.Unity.UI.{forbiddenLeaf}'를 참조합니다: " +
+                string.Join(", ", violations));
+        }
+
+        private static string StripComments(string source)
+        {
+            source = Regex.Replace(source, @"/\*.*?\*/", string.Empty, RegexOptions.Singleline);
+            source = Regex.Replace(source, @"^\s*///.*$", string.Empty, RegexOptions.Multiline);
+            source = Regex.Replace(source, @"//.*$", string.Empty, RegexOptions.Multiline);
+            return source;
+        }
+
+        private static string TestSourceDirectory([CallerFilePath] string path = "")
+            => Path.GetDirectoryName(path);
     }
 }

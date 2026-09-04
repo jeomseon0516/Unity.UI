@@ -43,6 +43,9 @@ namespace Jeomseon.Unity.UI.Navigation
         private readonly List<Entry> _history = new();
         private readonly Dictionary<Type, UIView> _openViews = new();
 
+        private bool _isNavigating;
+        private bool _disposed;
+
         public NavigationStack(UIChannel channel, Func<UIView, Awaitable> exitAnimation = null)
         {
             _channel = channel ? channel : throw new ArgumentNullException(nameof(channel));
@@ -66,22 +69,38 @@ namespace Jeomseon.Unity.UI.Navigation
 
         public void Push<T>(object args = null) where T : UIView
         {
-            Type from = Current;
-            PushCore(typeof(T), args, () => _channel.RequestOpen<T>());
-            Raise(NavigationAction.Push, from, typeof(T));
+            if (!TryBeginNavigation(nameof(Push))) return;
+            try
+            {
+                Type from = Current;
+                PushCore(typeof(T), args, () => _channel.RequestOpen<T>());
+                Raise(NavigationAction.Push, from, typeof(T));
+            }
+            finally
+            {
+                _isNavigating = false;
+            }
         }
 
         /// <summary>최상단 화면을 닫고 직전 화면으로 돌아갑니다. 스택 깊이가 1 이하면 <c>false</c>.</summary>
         public bool Back()
         {
-            if (!CanGoBack) return false;
+            if (!TryBeginNavigation(nameof(Back))) return false;
+            try
+            {
+                if (!CanGoBack) return false;
 
-            Type from = Current;
-            _history.RemoveAt(_history.Count - 1);
-            CloseByType(from);
-            _history[^1].Open();
-            Raise(NavigationAction.Back, from, Current);
-            return true;
+                Type from = Current;
+                _history.RemoveAt(_history.Count - 1);
+                CloseByType(from);
+                _history[^1].Open();
+                Raise(NavigationAction.Back, from, Current);
+                return true;
+            }
+            finally
+            {
+                _isNavigating = false;
+            }
         }
 
         /// <summary>
@@ -90,30 +109,69 @@ namespace Jeomseon.Unity.UI.Navigation
         /// </summary>
         public void PopTo<T>() where T : UIView
         {
-            int index = _history.FindLastIndex(entry => entry.Type == typeof(T));
-            if (index < 0 || index == _history.Count - 1) return;
-
-            Type from = Current;
-            for (int i = _history.Count - 1; i > index; i--)
+            if (!TryBeginNavigation(nameof(PopTo))) return;
+            try
             {
-                CloseByType(_history[i].Type);
-                _history.RemoveAt(i);
-            }
+                int index = _history.FindLastIndex(entry => entry.Type == typeof(T));
+                if (index < 0 || index == _history.Count - 1) return;
 
-            _history[^1].Open();
-            Raise(NavigationAction.PopTo, from, Current);
+                Type from = Current;
+                for (int i = _history.Count - 1; i > index; i--)
+                {
+                    CloseByType(_history[i].Type);
+                    _history.RemoveAt(i);
+                }
+
+                _history[^1].Open();
+                Raise(NavigationAction.PopTo, from, Current);
+            }
+            finally
+            {
+                _isNavigating = false;
+            }
         }
 
         /// <summary>스택을 모두 비우고 <typeparamref name="T"/>를 새 루트로 엽니다.</summary>
         public void ResetTo<T>(object args = null) where T : UIView
         {
-            Type from = Current;
-            for (int i = _history.Count - 1; i >= 0; i--)
-                CloseByType(_history[i].Type);
-            _history.Clear();
+            if (!TryBeginNavigation(nameof(ResetTo))) return;
+            try
+            {
+                Type from = Current;
+                for (int i = _history.Count - 1; i >= 0; i--)
+                    CloseByType(_history[i].Type);
+                _history.Clear();
 
-            PushCore(typeof(T), args, () => _channel.RequestOpen<T>());
-            Raise(NavigationAction.Reset, from, typeof(T));
+                PushCore(typeof(T), args, () => _channel.RequestOpen<T>());
+                Raise(NavigationAction.Reset, from, typeof(T));
+            }
+            finally
+            {
+                _isNavigating = false;
+            }
+        }
+
+        /// <summary>
+        /// 재진입(전환 이벤트 콜백이나 더블 입력에서 다시 호출)과 <see cref="Dispose"/> 이후 호출을
+        /// 막습니다. 스택 조작은 동기 구간이며, exit 연출은 <see cref="CloseByType"/>에서 분리 실행되므로
+        /// 이 가드는 동기 재진입만 차단합니다.
+        /// </summary>
+        private bool TryBeginNavigation(string caller)
+        {
+            if (_disposed)
+            {
+                Debug.LogWarning($"NavigationStack.{caller} called after Dispose(); ignored.");
+                return false;
+            }
+
+            if (_isNavigating)
+            {
+                Debug.LogWarning($"NavigationStack.{caller} called re-entrantly while a navigation is in progress; ignored.");
+                return false;
+            }
+
+            _isNavigating = true;
+            return true;
         }
 
         private void PushCore(Type type, object args, Action open)
@@ -134,8 +192,17 @@ namespace Jeomseon.Unity.UI.Navigation
 
         private async Awaitable CloseAnimated(UIView view)
         {
-            await _exitAnimation(view);
-            _channel.RequestClose(view);
+            try
+            {
+                await _exitAnimation(view);
+            }
+            catch (Exception exception)
+            {
+                // 분리 실행(fire-and-forget)이므로 예외를 삼키지 않고 로그로 남긴 뒤 닫기는 진행합니다.
+                Debug.LogException(exception);
+            }
+
+            if (view != null) _channel.RequestClose(view);
         }
 
         private void HandleOpened(UIView view)
@@ -159,6 +226,8 @@ namespace Jeomseon.Unity.UI.Navigation
 
         public void Dispose()
         {
+            if (_disposed) return;
+            _disposed = true;
             _channel.ScreenOpened -= HandleOpened;
             _channel.ScreenClosed -= HandleClosed;
             _channel.AllScreensClosed -= HandleAllClosed;

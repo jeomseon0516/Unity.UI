@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Jeomseon.Unity.UI.Channels;
 using Jeomseon.Unity.UI.Navigation;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 
 namespace Jeomseon.Unity.UI.Tests
@@ -147,6 +149,68 @@ namespace Jeomseon.Unity.UI.Tests
             Assert.That(_nav.Depth, Is.EqualTo(1));
             Assert.That(_closed, Contains.Item(ViewFor(typeof(ScreenA))));
             Assert.That(_closed, Contains.Item(ViewFor(typeof(ScreenB))));
+        }
+
+        [Test]
+        public void PopTo_UnknownType_DoesNothing()
+        {
+            _nav.Push<ScreenA>();
+            _nav.Push<ScreenB>();
+            _closed.Clear();
+            _opened.Clear();
+
+            _nav.PopTo<ScreenC>();
+
+            Assert.That(_nav.Current, Is.EqualTo(typeof(ScreenB)));
+            Assert.That(_nav.Depth, Is.EqualTo(2));
+            Assert.That(_closed, Is.Empty);
+            Assert.That(_opened, Is.Empty);
+        }
+
+        [Test]
+        public void ResetTo_OnEmptyStack_OpensRoot()
+        {
+            _nav.ResetTo<ScreenA>();
+
+            Assert.That(_nav.Current, Is.EqualTo(typeof(ScreenA)));
+            Assert.That(_nav.Depth, Is.EqualTo(1));
+            Assert.That(_opened, Is.EqualTo(new[] { typeof(ScreenA) }));
+        }
+
+        [Test]
+        public void CallsAfterDispose_AreIgnored()
+        {
+            _nav.Push<ScreenA>();
+            _nav.Dispose();
+            _opened.Clear();
+
+            LogAssert.Expect(LogType.Warning, new Regex("after Dispose"));
+            _nav.Push<ScreenB>();
+
+            Assert.That(_opened, Is.Empty);
+            Assert.That(_nav.Back(), Is.False);
+        }
+
+        [Test]
+        public void ReentrantCall_FromChangedHandler_IsIgnored()
+        {
+            _nav.Push<ScreenA>();
+            _nav.Push<ScreenB>();
+
+            int reentryAttempts = 0;
+            _nav.Changed += _ =>
+            {
+                if (reentryAttempts++ == 0)
+                {
+                    LogAssert.Expect(LogType.Warning, new Regex("re-entrantly"));
+                    _nav.Push<ScreenC>();
+                }
+            };
+
+            _nav.Back();
+
+            Assert.That(_nav.Current, Is.EqualTo(typeof(ScreenA)), "re-entrant Push must not have taken effect");
+            Assert.That(_nav.Depth, Is.EqualTo(1));
         }
 
         [Test]
