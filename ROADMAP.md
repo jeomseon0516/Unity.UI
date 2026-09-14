@@ -4,7 +4,7 @@
 
 ## 작업 순서
 
-1. **P0-01/P0-02 — UIManager 수명·스택 안정화** (uGUI 구현 폐기, `ADR-0008`로 대체됨, 2026-08-18)
+1. **P0-01/P0-02 — UIManager 수명·스택 안정화** (uGUI 구현 폐기, UI Toolkit 구현으로 대체됨, 2026-08-18)
    - 원래 계획은 uGUI `UIManager`/`BaseUI`의 결함(파괴된 UI가 활성 스택에 남는 경우, 등록되지 않은
      UI를 닫을 때 전체 스택이 닫히는 경우, `baseUIList` 중복 키 등록 시 예외)을 직접 수정하는
      것이었습니다. 실제로 이 세 결함을 발견·수정까지 했으나(커밋 전), 사용자가 uGUI 자체를
@@ -13,7 +13,7 @@
      갖지 않거나(파쇄된 참조 — `UIView`는 `VisualElement`라 Unity native 파괴/fake-null 개념이 없어
      `MissingReferenceException` 자체가 불가능) 새 구현에서 동일하게 방어합니다(등록되지 않은 화면을
      닫아도 무관한 화면에 영향 없음, 중복 타입 등록은 경고만 남기고 무시). 상세는 P2-01 참고.
-2. **P1-01 — UI 등록 설정 에셋** (완료, `ADR-0008`, 2026-08-18)
+2. **P1-01 — UI 등록 설정 에셋** (완료, 2026-08-18)
    - `UIChannel`(ScriptableObject)에 `{Layer, VisualTreeAsset}` 카탈로그 엔트리를 Inspector에서
      구성합니다. UXML 루트 자체를 `[UxmlElement] UIView` 파생 타입으로 선언하고 Manager가
      `VisualTreeAsset.Instantiate()`로 생성된 실제 View를 등록합니다. 타입 문자열·전용 Drawer·
@@ -22,13 +22,13 @@
    - Addressables를 강제하지 않는 loader 계약과 로딩 취소·실패 정책을 설계합니다. 카탈로그 밖에서
      코드로 화면을 등록하는 경로(예: 런타임에 Addressables로 받아온 화면)는 아직 없습니다 — 이
      항목에서 함께 설계합니다.
-4. **P2-01 — UI Toolkit 전면 전환** (Core 구현 완료, Unity 검증 대기, 2026-08-18, `ADR-0008` 참고)
+4. **P2-01 — UI Toolkit 전면 전환** (Core 구현 완료, Unity 검증 대기, 2026-08-18)
    - `UIStackManager`/`UIView`(옛 `UIManager`/`BaseUI`)를 `UIDocument`/`VisualElement` 기반으로
      재설계했습니다. 책임을 "타입 기반 화면 조회·등록, 레이어별 스택 북키핑, 정렬"로 좁히고,
      레이어 간·레이어 내 입력 차단은 UI Toolkit의 피킹(트리 순서)에 맡기고 코드로 구현하지
-     않습니다(backdrop 컨벤션으로 해결, `ADR-0008` 3절).
+     않습니다(backdrop 컨벤션으로 해결).
    - `UILayer` 3단계(`Screen`/`Popup`/`System`) 고정, 레이어별 독립 스택. `System`은 로딩 화면·전역
-     알림/토스트처럼 Popup보다 항상 위에 떠야 하는 화면 전용 레이어로 `ADR-0008` 3절에 이미 확정된
+     알림/토스트처럼 Popup보다 항상 위에 떠야 하는 화면 전용 레이어로 확정된
      설계입니다. `UIStackManager.BuildCatalog()`가 `UILayer` 전체를 열거해 제네릭하게 지원하므로
      구현 누락이 아니며, 삭제 대상도 아닙니다. **다만 이 레이어를 실제로 쓰는 Sample 화면이나
      PlayMode 테스트가 아직 없어(커버리지 공백, 2026-08-18 확인) `Screen`/`Popup`과 달리 동작이
@@ -38,9 +38,9 @@
      상호작용합니다. `UIStackManager`는 일반 `MonoBehaviour`이며 정적 `Instance` 접근을 제공하지
      않습니다. Core는 VContainer 등 특정 DI 컨테이너에 의존하지 않으며, 나중에 DI가 필요해지면
      프로젝트 조합 루트가 DI로 확보한 `UIChannel`을 `UIStackManager.Initialize(UIChannel)`에 직접
-     넘기는 것으로 해결됩니다(`ADR-0008` 5절). 패키지는 특정 DI 라이브러리를 참조하지 않습니다.
+     넘기는 것으로 해결됩니다. 패키지는 특정 DI 라이브러리를 참조하지 않습니다.
      한 줄만 위임하는 별도 `UIStackManagerInitializer` 래퍼 타입은 의미 없는 간접 계층이라
-     추가하지 않기로 확정했습니다(2026-08-18, `AGENTS.md` 공통 판단 순서 3번).
+     추가하지 않기로 확정했습니다(2026-08-18).
    - 채널 요청 처리 결과는 `UIChannel.ScreenOpened(UIView)`/`ScreenClosed(UIView)`/
      `AllScreensClosed` public event로 발행합니다. `Type` 대신 실제 `UIView` 인스턴스를 전달해
      코드 구독자가 별도 변환 없이 타입 안전하게 접근할 수 있습니다. Inspector 영구 리스너는
@@ -114,7 +114,7 @@
      - `LoadingView(System)`를 추가해 System 레이어 실사용 예시를 보강했습니다(2026-08-18, 이전엔
        Runtime/Sample/Tests 어디에도 System 레이어 사용처가 없었던 커버리지 공백을 해소).
        `HomeView`의 "Open System Toast" 버튼으로 열며, backdrop 없이 화면 일부만 덮는 비모달
-       토스트라(ADR-0008 3절) Popup이 열려 있어도 그 위에 계속 표시됩니다. `UIChannel.asset`에
+       토스트라 Popup이 열려 있어도 그 위에 계속 표시됩니다. `UIChannel.asset`에
        `layer: 2`(System) 엔트리로 등록했습니다.
      - **TestProject의 `Assets/Samples/Jeomseon Unity UI/0.5.0/Basic Usage`는 Unity Package
        Manager로 한 번 Import된 별도 복사본이라, 패키지 `Samples~`를 고쳐도 자동으로 갱신되지
@@ -342,14 +342,12 @@ Sample도 복구했습니다. `UICatalog.asset`을 추가하고 Scene의 `UIStac
 `UIChannel.asset`에 남아 있던 화면 목록은 제거했습니다. Catalog 항목 3개(Screen=HomeView,
 Popup=PopupView, System=LoadingView)와 Scene 참조가 Unity에서 실제로 해석되는 것을 확인했습니다.
 
-아키텍처 문서화까지 마쳐 이 재설계 작업은 완료입니다. 클래스별 책임, 의존 규칙, 수명, 개선점,
-확장 지점과 도입하지 않은 항목의 근거는 하네스의 `architecture/ui-stack-architecture.md`에
-기록했습니다.
+아키텍처 문서화까지 마쳐 이 재설계 작업은 완료입니다.
 
 ### 원본 지시 스펙 (2026-08-20)
 
 사용자가 2026-08-20에 상세 스펙을 전달했습니다. **GridTileSystem 작업을 완료한 뒤** 이 패키지로
-돌아와 검토·착수합니다. ADR-0008의 핵심 원칙(`UIView`와 `UIStackManager`가 서로 직접 참조하지
+돌아와 검토·착수합니다. 핵심 원칙(`UIView`와 `UIStackManager`가 서로 직접 참조하지
 않고 `UIChannel`을 경유)은 그대로 유지하고, 전체 구조를 갈아엎지 않으며 기존 Public API와 동작을
 보존한 채 책임만 더 명확히 나눕니다. 요지:
 
@@ -384,7 +382,7 @@ Popup=PopupView, System=LoadingView)와 Scene 참조가 Unity에서 실제로 �
   담당합니다. "UI Scope"(`UIRoot`+`UICatalog`+`UIChannel`+`UIViewFactory`+`UIRegistry`+
   `UIStackController`) 개념은 있지만, Screen/Popup/Overlay Layer용 하위 Scope 시스템처럼 지금
   당장 필요하지 않은 확장은 미리 만들지 않습니다.
-- **금지 사항(ADR-0008 유지).** `UIView → UIStackManager` 또는 `UIStackManager → 특정 UIView
+- **금지 사항.** `UIView → UIStackManager` 또는 `UIStackManager → 특정 UIView
   구현체` 직접 참조 금지. `UIView → IUIRequester → UIChannel → UI Runtime` 간접 통신만 허용.
 - **테스트 가능성.** UI 등록, 중복 타입 등록, Layer Stack ordering, Open/Close/CloseAll, 이미
   닫힌/다른 Layer의 UIView 처리, Channel 요청 전달은 가능한 한 Scene 없이 테스트합니다. UXML
@@ -409,12 +407,11 @@ Popup=PopupView, System=LoadingView)와 Scene 참조가 Unity에서 실제로 �
 - `DragAndDropEvent`의 UI Toolkit 재설계 여부(길게 눌러 복제 이미지를 드래그하는 특수 동작). 필요성
   자체가 불확실해 재요청이 있을 때 착수합니다.
 
-### Navigation·Transition 0.7.0 후속 (Kilo PR #3 리뷰 반영)
+### Navigation·Transition 0.7.0 후속
 
 - `NavigationStack.Back()`/`PopTo`/`ResetTo`의 완전 비동기 직렬화. 현재는 동기 재진입 가드만 있고
   exit 연출은 분리 실행(로그만). `Awaitable` 반환으로 바꾸는 것은 API 형태 변경이라 다음 major에서.
 - `ValueTween` element별 활성 애니메이션 취소(같은 element에 enter/exit가 겹칠 때). 현재는 각 호출이
   독립 `AwaitableCompletionSource`라 공유 소스 이중 완료는 없음 — 방어적 하드닝 항목.
-- `ValueTween` 실제 트윈 동작 PlayMode 테스트(살아있는 panel/scheduler 필요, `UIStackControllerTests`
-  하네스 재사용 검토).
+- `ValueTween` 실제 트윈 동작 PlayMode 테스트(살아있는 panel/scheduler 필요).
 - `NavigationStack`의 `object args` → 타입 있는 `INavigationArgs` 패턴 검토(0.7.0은 최소 표면 유지).

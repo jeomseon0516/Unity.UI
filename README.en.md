@@ -35,7 +35,7 @@ https://github.com/jeomseon0516/Unity.UI.git#v0.7.0
 
 One package, one asmdef; the sub-layers are split by namespace only. They work independently,
 and the only allowed dependency direction is `Jeomseon.Unity.UI` (Core) &larr; `.Transition` /
-`.Navigation` (harness `ADR-0009`).
+`.Navigation`.
 
 | Namespace | Role |
 | --- | --- |

@@ -2,8 +2,8 @@
 
 ## [0.7.0] - 2026-09-03
 
-- **Navigation·Transition 하위 계층 추가** (같은 패키지, 단일 asmdef, 네임스페이스로만 분리 —
-  하네스 `ADR-0009`). Core(`UIView`/`UIChannel`/`UIStackManager`) 코드는 변경 없음. 순수 additive.
+- **Navigation·Transition 하위 계층 추가** (같은 패키지, 단일 asmdef, 네임스페이스로만 분리).
+  Core(`UIView`/`UIChannel`/`UIStackManager`) 코드는 변경 없음. 순수 additive.
   - `Jeomseon.Unity.UI.Transition` — `ITransition`(`PlayEnter`/`PlayExit`, `Awaitable`) + 기본
     전략 `NoTransition`/`FadeTransition`/`SlideTransition(SlideEdge)`/`ScaleTransition`. UI Toolkit
     `experimental.animation`으로 float 하나를 트윈합니다. `ScreenTransitions`가 `UIChannel` 알림만
@@ -33,7 +33,7 @@
   만들어 기존 `UIChannel.entries` 항목을 옮기고 `UIStackManager.catalog`에 지정합니다.
 - **(Breaking)** `UIView.Channel`의 타입이 `UIChannel`에서 `IUIRequester`로 바뀌었습니다. View는
   열기·닫기 요청만 보내고 `ScreenOpened` 같은 Notification은 구독할 수 없습니다. View끼리 서로의
-  상태를 감지하는 암묵적 결합을 막기 위한 접근 범위 제한입니다(ADR-0008).
+  상태를 감지하는 암묵적 결합을 막기 위한 접근 범위 제한입니다.
 - `UIStackManager`를 조합 루트로 축소했습니다. Layer별 Stack·등록 상태는 순수 C# `UIStackController`가,
   UXML Layout에서 View를 만드는 일은 `UIViewFactory`가 담당합니다. Manager에는 Layer 컨테이너 생성과
   Channel 구독 중계만 남습니다.
@@ -76,7 +76,7 @@
 - `Samples~/BasicUsage/UIBasicUsageSample.unity`에 `Main Camera`(Clear Flags: Solid Color)를
   추가했습니다. UI Toolkit 전용 Scene이라도 Camera가 하나도 없으면 프레임버퍼가 클리어되지 않아
   이전 프레임이 잔상으로 남습니다.
-- **(Breaking, `ADR-0008`)** `UIManager`/`BaseUI`(uGUI `Canvas`/`GraphicRaycaster` 기반)를 제거하고
+- **(Breaking)** `UIManager`/`BaseUI`(uGUI `Canvas`/`GraphicRaycaster` 기반)를 제거하고
   `UIStackManager`/`UIView`(`UIDocument`/`VisualElement` 기반)로 전면 재설계했습니다.
   - `UIStackManager`는 타입 기반 화면 조회·등록, 레이어(`UILayer`: `Screen`/`Popup`/`System`)별 열림
     스택 북키핑, 정렬(`BringToFront`)만 관리합니다. 레이어 간·레이어 내 입력 차단은 UI Toolkit의

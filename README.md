@@ -34,7 +34,7 @@ https://github.com/jeomseon0516/Unity.UI.git#v0.7.0
 ## 구성 (네임스페이스)
 
 한 패키지·한 asmdef이며 하위 계층은 네임스페이스로만 나뉩니다. 서로 독립 동작하고, 의존 방향은
-`Jeomseon.Unity.UI`(Core) ← `.Transition` / `.Navigation` 한 방향만 허용합니다(하네스 `ADR-0009`).
+`Jeomseon.Unity.UI`(Core) ← `.Transition` / `.Navigation` 한 방향만 허용합니다.
 
 | 네임스페이스 | 역할 |
 | --- | --- |
