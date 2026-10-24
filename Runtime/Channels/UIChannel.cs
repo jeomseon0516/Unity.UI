@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Jeomseon.Unity.UI.Channels
 {
-    // .. UIStackManager와 UIView가 서로를 직접 참조하지 않고 이 자산을 통해서만 상호작용합니다(ADR-0008).
+    // .. UIStackManager와 UIView가 서로를 직접 참조하지 않고 이 자산을 통해서만 상호작용합니다.
     [CreateAssetMenu(fileName = "UIChannel", menuName = "Jeomseon/UI/UI Channel")]
     public sealed class UIChannel : ScriptableObject, IUIRequester
     {
