@@ -79,7 +79,7 @@ namespace Jeomseon.Tests
         [UnityTest]
         public IEnumerator OpenThenClose_SystemLayer_TogglesVisibility()
         {
-            // .. System은 로딩/알림처럼 Popup 위에 항상 떠야 하는 레이어입니다(ADR-0008 3절).
+            // .. System은 로딩/알림처럼 Popup 위에 항상 떠야 하는 레이어입니다.
             // .. Screen/Popup과 동등하게 등록·열기·닫기가 되는지 검증합니다.
             var channel = ScriptableObject.CreateInstance<UIChannel>();
             UIStackManager manager = CreateManager(channel);

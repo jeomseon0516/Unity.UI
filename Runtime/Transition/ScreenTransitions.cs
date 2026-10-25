@@ -6,7 +6,7 @@ namespace Jeomseon.Unity.UI.Transition
 {
     /// <summary>
     /// <see cref="UIChannel"/> 위에 얇게 얹는 소비자용 진입점입니다. Core(UIView/UIChannel/
-    /// UIStackManager)는 전혀 바꾸지 않습니다(ADR-0009 §2).
+    /// UIStackManager)는 전혀 바꾸지 않습니다.
     ///
     /// <para><b>enter</b>: <see cref="UIChannel.ScreenOpened"/>를 구독해 화면이 표시되는 즉시
     /// 기본 전략의 <see cref="ITransition.PlayEnter"/>를 재생합니다(<paramref name="autoEnter"/>).</para>

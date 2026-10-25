@@ -7,7 +7,7 @@ namespace Jeomseon.Unity.UI.Transition
     /// <summary>
     /// <see cref="UIChannel"/>의 알림 이벤트만 구독해 "현재 열려 있는 화면"을 구체 타입별로 추적합니다.
     /// exit 연출은 화면이 닫히기 전에 그 <see cref="UIView"/> 인스턴스가 필요하므로, Core를 건드리지
-    /// 않고 여기서 매핑을 유지합니다(ADR-0009 §2).
+    /// 않고 여기서 매핑을 유지합니다.
     /// </summary>
     public sealed class OpenScreenTracker : IDisposable
     {

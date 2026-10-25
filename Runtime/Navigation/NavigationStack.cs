@@ -11,7 +11,7 @@ namespace Jeomseon.Unity.UI.Navigation
     ///
     /// <para>Core의 <c>UIStackController</c>("레이어별 등록 상태")와 별개입니다. 이동은
     /// <see cref="UIChannel"/>의 <c>RequestOpen</c>/<c>RequestClose</c>를 <b>직접 호출</b>하며
-    /// (ADR-0009 §3), 열린 <see cref="UIView"/> 인스턴스는 채널 알림 이벤트로 추적합니다.</para>
+    /// , 열린 <see cref="UIView"/> 인스턴스는 채널 알림 이벤트로 추적합니다.</para>
     ///
     /// <para>Push는 스택 위에 쌓는 동작이라 이전 화면을 닫지 않습니다(UI Toolkit picking이 트리
     /// 순서를 따르므로 위 화면이 아래를 덮습니다). <see cref="Back"/>은 최상단 화면만 닫고

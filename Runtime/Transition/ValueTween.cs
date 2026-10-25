@@ -8,7 +8,7 @@ namespace Jeomseon.Unity.UI.Transition
     /// <summary>
     /// <see cref="IVisualElementScheduledItem"/>가 아니라 UI Toolkit의
     /// <c>experimental.animation</c>(<see cref="ValueAnimation{T}"/>)으로 float 값 하나를 트윈하고,
-    /// 완료를 <see cref="Awaitable"/>로 돌려주는 내부 헬퍼입니다(ADR-0009 §2).
+    /// 완료를 <see cref="Awaitable"/>로 돌려주는 내부 헬퍼입니다.
     /// </summary>
     internal static class ValueTween
     {

@@ -6,7 +6,6 @@ namespace Jeomseon.Unity.UI.Transition
     /// <summary>
     /// 화면 하나가 열리거나 닫힐 때의 enter/exit 연출을 캡슐화한 전략입니다.
     /// 스택·history를 알지 못하며, 대상 <see cref="VisualElement"/>에만 애니메이션을 적용합니다.
-    /// 근거: 하네스 ADR-0009.
     /// </summary>
     public interface ITransition
     {

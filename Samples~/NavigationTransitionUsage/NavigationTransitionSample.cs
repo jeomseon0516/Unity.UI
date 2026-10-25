@@ -11,7 +11,7 @@ namespace Jeomseon.Samples.UI
     /// <summary>
     /// <see cref="NavigationStack"/>(history/back)와 <see cref="ScreenTransitions"/>(enter/exit 연출)를
     /// 함께 씁니다. 화면 코드는 <c>Instance.Nav</c>로 이동을 요청합니다(<c>channel.RequestOpen</c>
-    /// 직접 호출은 history에 잡히지 않으므로 — ADR-0009 §3).
+    /// 직접 호출은 history에 잡히지 않으므로).
     /// </summary>
     public sealed class NavigationTransitionSample : MonoBehaviour
     {
