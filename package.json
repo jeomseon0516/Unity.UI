@@ -1,11 +1,13 @@
 {
   "name": "com.jeomseon.unity.ui",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "displayName": "Jeomseon Unity UI",
   "description": "UI Toolkit based screen stack manager and reusable VisualElement controls.",
   "unity": "6000.6",
   "unityRelease": "0f1",
-  "dependencies": {},
+  "dependencies": {
+    "com.unity.modules.uielements": "1.0.0"
+  },
   "author": {
     "name": "jeomseon0516",
     "url": "https://github.com/jeomseon0516"

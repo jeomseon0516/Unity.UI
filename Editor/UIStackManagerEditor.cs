@@ -1,5 +1,6 @@
 using Jeomseon.Unity.UI.Channels;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -32,6 +33,43 @@ namespace Jeomseon.Unity.UI.Editor
 
             _manager.ClearCatalog();
             InternalEditorUtility.RepaintAllViews();
+        }
+
+        public override VisualElement CreateInspectorGUI()
+        {
+            var root = new VisualElement();
+            InspectorElement.FillDefaultInspector(root, serializedObject, this);
+
+            var previewHelpBox = new HelpBox(
+                "Selecting this object previews its catalog in Edit Mode. Deselect to clear the preview.",
+                HelpBoxMessageType.Info);
+            root.Add(previewHelpBox);
+
+            // .. IMGUI 경로는 매 그리기마다 CanPreview를 확인합니다. UI Toolkit 경로는 Play Mode 전환
+            // .. 시점에 안내 표시 여부를 다시 계산합니다.
+            void RefreshHelpBox()
+            {
+                previewHelpBox.style.display = CanPreview ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+
+            void HandlePlayModeStateChanged(PlayModeStateChange _) => RefreshHelpBox();
+
+            RefreshHelpBox();
+            root.RegisterCallback<AttachToPanelEvent>(_ =>
+            {
+                EditorApplication.playModeStateChanged += HandlePlayModeStateChanged;
+                RefreshHelpBox();
+            });
+            root.RegisterCallback<DetachFromPanelEvent>(_ =>
+                EditorApplication.playModeStateChanged -= HandlePlayModeStateChanged);
+
+            // .. IMGUI 경로의 DrawDefaultInspector 변경 감지와 같이 직렬화 값이 바뀌면 미리보기를
+            // .. 다시 구성합니다.
+            root.TrackSerializedObjectValue(serializedObject, _ =>
+            {
+                if (CanPreview) Preview();
+            });
+            return root;
         }
 
         public override void OnInspectorGUI()

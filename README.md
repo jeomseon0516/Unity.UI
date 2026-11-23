@@ -33,7 +33,7 @@ Core는 특정 View 구현을 직접 참조하지 않습니다. Screen/Popup/Sys
     }
   ],
   "dependencies": {
-    "com.jeomseon.unity.ui": "0.7.0"
+    "com.jeomseon.unity.ui": "0.7.1"
   }
 }
 ```
@@ -41,7 +41,7 @@ Core는 특정 View 구현을 직접 참조하지 않습니다. Screen/Popup/Sys
 또는 Package Manager의 **Install package from git URL**을 사용합니다:
 
 ```text
-https://github.com/jeomseon0516/Unity.UI.git#v0.7.0
+https://github.com/jeomseon0516/Unity.UI.git#v0.7.1
 ```
 
 ## API 사용과 상세 설명
