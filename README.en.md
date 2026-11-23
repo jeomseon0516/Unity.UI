@@ -18,7 +18,7 @@ Register the OpenUPM scoped registry once in your project's `Packages/manifest.j
     }
   ],
   "dependencies": {
-    "com.jeomseon.unity.ui": "0.7.0"
+    "com.jeomseon.unity.ui": "0.7.1"
   }
 }
 ```
@@ -28,7 +28,7 @@ Register the OpenUPM scoped registry once in your project's `Packages/manifest.j
 Enter the following URL in Unity Package Manager's `Install package from git URL`.
 
 ```text
-https://github.com/jeomseon0516/Unity.UI.git#v0.7.0
+https://github.com/jeomseon0516/Unity.UI.git#v0.7.1
 ```
 
 ## Namespace composition
